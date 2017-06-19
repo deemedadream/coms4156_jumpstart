@@ -23,7 +23,6 @@ class Students(Model):
             query = self.ds.query(kind='courses')
             query.add_filter('cid', '=', enrolledCourse['cid'])
             result = result + list(query.fetch())
-
         return result
 
     def get_secret_and_seid(self):
@@ -35,7 +34,7 @@ class Students(Model):
             query.add_filter('cid', '=', enrolled['cid'])
             sessions = list(query.fetch())
             for session in sessions:
-                if session['expires'].replace(tzinfo=None) > datetime.now():
+                if session['window_open']==True:
                     results.append(session)
             # results = results + list(query.fetch())
         if len(results) == 1:

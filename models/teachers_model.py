@@ -1,6 +1,9 @@
-from model import Model
+from model import Model 
 from datetime import datetime, date
 from google.cloud import datastore
+import sessions_model
+import logging
+import sys
 
 class Teachers(Model):
 
@@ -25,23 +28,45 @@ class Teachers(Model):
         query = self.ds.query(kind='teaches')
         query.add_filter('tid', '=', self.tid)
         teaches = list(query.fetch())
+        logging.warning("printing teachers line 30================================================================================")
+        logging.warning(teaches)
         courses = list()
         for teach in teaches:
             query = self.ds.query(kind='courses')
             query.add_filter('cid', '=', teach['cid'])
             courses = courses + list(query.fetch())
+        logging.warning("printing teachers line 37================================================================================")
+        logging.warning(courses)
         results = list()
         for course in courses:
+            logging.warning("printing teachers line 44================================================================================")
+            logging.warning(course['cid'])
+            ssm = sessions_model.Sessions()
+            ssm.open_session(course['cid'])
             query = self.ds.query(kind='sessions')
             query.add_filter('cid', '=', course['cid'])
             sessions = list(query.fetch())
+            logging.warning("printing teachers line 49================================================================================")
+            logging.warning(sessions)
             for session in sessions:
-                if session['expires'].replace(tzinfo=None) > datetime.now():
-                    results.append(session)
-            if len(results) == 1:
-                course['secret'] = sessions[0]['secret']
-
+                logging.warning("printing teachers_model at line 50================================================================================")
+                logging.warning(session)
+                if session['window_open'] == True:
+                    course['active'] = 1
+                    course['secret'] = sessions[0]['secret']
+                    logging.warning("printing teachers_model at line 56================================================================================")
+                    logging.warning('active')
+                else:
+                    course['active'] = 0
+                    #results.append(session)
+                    course['secret'] = sessions[0]['secret']
+                    logging.warning("printing teachers_model at line 61================================================================================")
+                    logging.warning('inactive')
+            logging.warning("printing teachers_model at line 53================================================================================")
+            logging.warning(course)
         # result = courses + sessions
+        logging.warning("printing teachers_model at line 66================================================================================")
+        logging.warning(courses)
         return courses
 
 
@@ -50,11 +75,12 @@ class Teachers(Model):
         entity = datastore.Entity(
             key=key)
         entity.update({
-            'name': course_name,
-            'active': 0
+            'name': course_name
         })
         self.ds.put(entity)
         cid = entity.key.id
+        logging.warning("printing teachers_model at line 66================================================================================")
+        logging.warning(cid)
         entity.update({
             'cid': cid
         })

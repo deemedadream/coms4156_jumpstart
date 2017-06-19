@@ -1,0 +1,10 @@
+<NotepadPlus>
+    <Session activeView="1">
+        <mainView activeIndex="0">
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1112" startPos="0" endPos="0" selMode="0" lang="Python" encoding="-1" filename="C:\Users\Tahir\repos\coms4156_jumpstart\unit_test_courses.py" backupFilePath="" originalFileLastModifTimestamp="1497766559" />
+        </mainView>
+        <subView activeIndex="0">
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="552" startPos="0" endPos="0" selMode="0" lang="Python" encoding="-1" filename="C:\Users\Tahir\repos\coms4156_jumpstart\models\courses_model.py" backupFilePath="" originalFileLastModifTimestamp="1497767151" />
+        </subView>
+    </Session>
+</NotepadPlus>
