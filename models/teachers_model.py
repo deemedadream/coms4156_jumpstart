@@ -41,8 +41,8 @@ class Teachers(Model):
         for course in courses:
             logging.warning("printing teachers line 44================================================================================")
             logging.warning(course['cid'])
-            ssm = sessions_model.Sessions()
-            ssm.open_session(course['cid'])
+            #ssm = sessions_model.Sessions()
+            #ssm.open_session(course['cid'])
             query = self.ds.query(kind='sessions')
             query.add_filter('cid', '=', course['cid'])
             sessions = list(query.fetch())

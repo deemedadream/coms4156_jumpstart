@@ -8,7 +8,7 @@ import sys
 class Sessions(Model):
 
     def __init__(self):
-        self.seid = 65645161531656
+        self.seid = -1
         self.cid = -1
         self.date = 'blank'
         self.ds = self.get_client()
@@ -24,12 +24,14 @@ class Sessions(Model):
             new_cid = self.cid  
         #find or create session
         query = self.ds.query(kind='sessions')
-        query.add_filter('date', '=', self.date)
+        #query.add_filter('date', '=', self.date)
         query.add_filter('cid', '=', new_cid)
-        query.add_filter('secret', '>', -1)
+        #query.add_filter('secret', '>', -1)
         result = list(query.fetch())
+        logging.warning("printing sessions_model at line 31================================================================================")
+        logging.warning(result)
         if not result:
-            logging.warning("printing sessions_model at line 32================================================================================")
+            logging.warning("printing sessions_model at line 34================================================================================")
             logging.warning(self.seid)
             self.cid = new_cid
             key = self.ds.key('sessions')
@@ -44,19 +46,35 @@ class Sessions(Model):
             })
             self.ds.put(entity)
             self.seid = entity.key.id
-            logging.warning("printing sessions_model at line 43================================================================================")
-            logging.warning(self.seid)
             entity.update({
                 'seid' : self.seid
             })
+            logging.warning("printing sessions_model at line 52================================================================================")
+            logging.warning(entity)
             self.ds.put(entity)
             return entity
+
+        elif int(result[0]['seid']) > -1 and int(result[0]['cid']) > -1 and str(result[0]['date']) == 'blank':
+            key = self.ds.key('sessions', result[0]['seid'])
+            entity = datastore.Entity(
+                key=key)
+            entity.update({
+                'date' : self.date,
+            })
+            self.ds.put(entity)
+            logging.warning("printing sessions_model at line 64================================================================================")
+            logging.warning(entity)
+            return entity
+            #result[0]['date']=str(date.today())
+
         else:
             self.seid = result[0]['seid']
             self.cid = result[0]['cid']
             self.date = result[0]['date']
             self.window_open = result[0]['window_open']
             self.secret = result[0]['secret']
+            logging.warning("OLD SESSION sessions line 74================================================================================")
+            logging.warning(result)
             return result[0]
 
     def open_window(self):

@@ -147,6 +147,8 @@ def main_teacher():
             ssm.close_window()
         elif "open" in request.form.keys():
             cid = request.form["open"]
+            logging.warning("printing imhere at line 150================================================================================")
+            logging.warning(cid)
             ssm.open_session(cid)
             ssm.open_window()
             logging.warning("printing imhere at line 152================================================================================")
@@ -191,6 +193,8 @@ def add_class():
         #create first session
         ssm = sessions_model.Sessions()
         ssm.open_session(cid)
+        logging.warning("printing imhere at line 194================================================================================")
+        logging.warning(ssm.seid)
 
         for uni in request.form['unis'].split('\n'):
             uni = uni.strip('\r')
