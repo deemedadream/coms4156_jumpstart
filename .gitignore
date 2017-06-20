@@ -1,5 +1,5 @@
-credentials.tar.gz
 client-secret.json
+credentials.tar.gz
 api_key.py
 
 
@@ -96,8 +96,8 @@ ENV/
 # imhere client secrets
 client_secrets.json
 cred.json
-credentials.tar.gz
 client_secrets_oauth.json
+credentials.tar.gz
 
 # Backup files
 *.*~

@@ -11,7 +11,5 @@ ImHere is an attendance-taking app using Flask and Python 2.7.  The Wiki guides 
 
 
 ### Have fun! and Don't Break the Build!
-
-Name: Roland Zhou
-Team Name: Balanced Library Birch Tree
-
+Jahan Khan (jak2270)
+>>>>>>> 1022e62d5d45e6942b8053e56c0b55f5eae3024a
