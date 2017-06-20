@@ -144,15 +144,15 @@ class Sessions(Model):
     def get_current_roster_size(self):
         return 0
 
-    '''def store_session(self)
-        key = self.ds.key('sessions', seid)
-            entity = datastore.Entity(
-                key=key)
-            entity.update({
-                'seid' : -1,
-                'cid' : new_cid,
-                'date' : self.date,
-                'window_open' : False,
-                'secret' : -1
+    def store_session(self):
+        key = self.ds.key('sessions', self.seid)
+        entity = datastore.Entity(
+            key=key)
+        entity.update({
+            'seid' : self.seid,
+            'cid' : self.cid,
+            'date' : self.date,
+            'window_open' : self.window_open,
+            'secret' : -self.secret
             })
-            self.ds.put(entity)'''
+        self.ds.put(entity)

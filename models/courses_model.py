@@ -7,9 +7,8 @@ import sys
 
 class Courses(Model):
 
-    def __init__(self, cid=-1, tid = -1):
+    def __init__(self, cid=-1):
         self.cid = cid
-        self.tid = tid
         self.course_name = ""
         self.ds = self.get_client()
 
@@ -96,8 +95,26 @@ class Courses(Model):
             # invalid uni
             return -1
 
-    def get_num_sessions(self):
-        query = self.ds.query(kind='sessions')
-        query.add_filter('cid', '=', int(self.cid))
-        results = list(query.fetch())
-        return len(results)
+    def get_sessions(self, single_seid = None):
+        if single_seid is None:
+            query = self.ds.query(kind='sessions')
+            query.add_filter('cid', '=', self.cid)
+            results = list(query.fetch())
+            return results
+        else:
+            query = self.ds.query(kind='sessions')
+            query.add_filter('cid', '=', self.cid)
+            query.add_filter('seid', '=', single_seid)
+            results = list(query.fetch())
+            return results[0]
+
+    def store_course(self):
+        key = self.ds.key('courses', self.cid)
+        entity = datastore.Entity(
+            key=key)
+        entity.update({
+            'course_name' : self.course_name,
+            'cid' : self.cid,
+            })
+        self.ds.put(entity)
+        return entity
