@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="75981ec7-1f21-4b2f-b19d-db2116a1edb4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/attendance_records_model.py" afterPath="$PROJECT_DIR$/models/attendance_records_model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requirements.txt" afterPath="$PROJECT_DIR$/requirements.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/unit_tests/unit_test_attendance_records.py" afterPath="$PROJECT_DIR$/unit_tests/unit_test_attendance_records.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/imhere/imhere.py" afterPath="$PROJECT_DIR$/imhere/imhere.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/imhere/templates/main_student.html" afterPath="$PROJECT_DIR$/imhere/templates/main_student.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/imhere/templates/student_class_attendance.html" afterPath="$PROJECT_DIR$/imhere/templates/student_class_attendance.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/students_model.py" afterPath="$PROJECT_DIR$/models/students_model.py" />
     </list>
     <ignored path="coms4156_jumpstart.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,15 +25,91 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="imhere.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="imhere.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/imhere/imhere.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="846">
-              <caret line="354" column="49" selection-start-line="354" selection-start-column="49" selection-end-line="354" selection-end-column="49" />
+            <state relative-caret-position="775">
+              <caret line="148" column="0" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
               <folding>
                 <element signature="e#26#35#0" expanded="true" />
-                <marker date="1498013688080" expanded="false" signature="26:103" ph="import ..." />
-                <marker date="1498013688080" expanded="true" signature="7439:8157" ph="..." />
+                <marker date="1498077335198" expanded="false" signature="26:103" ph="import ..." />
+                <marker date="1498077335198" expanded="true" signature="8114:8832" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="student_class_attendance.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/imhere/templates/student_class_attendance.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="25" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="students_model.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/models/students_model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="771">
+              <caret line="82" column="33" selection-start-line="82" selection-start-column="33" selection-end-line="82" selection-end-column="33" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main_student.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/imhere/templates/main_student.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="26" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="26" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="view_class.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/imhere/templates/view_class.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-663">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base_student.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/imhere/templates/base_student.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sessions_model.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/models/sessions_model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="645">
+              <caret line="43" column="31" selection-start-line="43" selection-start-column="31" selection-end-line="43" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="users_model.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/models/users_model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -51,30 +127,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="students_model.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/students_model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1065">
-              <caret line="71" column="27" selection-start-line="71" selection-start-column="27" selection-end-line="71" selection-end-column="27" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#34#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="courses_model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/courses_model.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -87,56 +139,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="attendance_records_model.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/attendance_records_model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="10" selection-start-line="0" selection-start-column="10" selection-end-line="0" selection-end-column="10" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="unit_test_attendance_records.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/unit_tests/unit_test_attendance_records.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_imhere.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test_imhere.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2443">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="e#267#279#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main_teacher.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/imhere/templates/main_teacher.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="42" column="21" selection-start-line="42" selection-start-column="21" selection-end-line="42" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -150,7 +159,11 @@
         <option value="$PROJECT_DIR$/models/attendance_records_model.py" />
         <option value="$PROJECT_DIR$/models/unit_test_attendance_records.py" />
         <option value="$PROJECT_DIR$/unit_tests/unit_test_attendance_records.py" />
+        <option value="$PROJECT_DIR$/imhere/templates/base_student.html" />
         <option value="$PROJECT_DIR$/imhere/imhere.py" />
+        <option value="$PROJECT_DIR$/imhere/templates/student_class_attendance.html" />
+        <option value="$PROJECT_DIR$/imhere/templates/main_student.html" />
+        <option value="$PROJECT_DIR$/models/students_model.py" />
       </list>
     </option>
   </component>
@@ -272,6 +285,7 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -473,8 +487,8 @@
           <caret line="321" column="39" selection-start-line="321" selection-start-column="39" selection-end-line="321" selection-end-column="39" />
           <folding>
             <element signature="e#26#35#0" expanded="true" />
-            <marker date="1498013688080" expanded="false" signature="26:103" ph="import ..." />
-            <marker date="1498013688080" expanded="true" signature="7439:8157" ph="..." />
+            <marker date="1498077335198" expanded="false" signature="26:103" ph="import ..." />
+            <marker date="1498077335198" expanded="true" signature="8114:8832" ph="..." />
           </folding>
         </state>
       </provider>
@@ -504,7 +518,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#34#0" expanded="true" />
+            <element signature="e#0#34#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -551,8 +565,8 @@
           <caret line="313" column="39" selection-start-line="313" selection-start-column="39" selection-end-line="313" selection-end-column="39" />
           <folding>
             <element signature="e#26#35#0" expanded="true" />
-            <marker date="1498013688080" expanded="false" signature="26:103" ph="import ..." />
-            <marker date="1498013688080" expanded="true" signature="7439:8157" ph="..." />
+            <marker date="1498077335198" expanded="false" signature="26:103" ph="import ..." />
+            <marker date="1498077335198" expanded="true" signature="8114:8832" ph="..." />
           </folding>
         </state>
       </provider>
@@ -582,7 +596,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#34#0" expanded="true" />
+            <element signature="e#0#34#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -611,8 +625,8 @@
           <caret line="313" column="39" selection-start-line="313" selection-start-column="39" selection-end-line="313" selection-end-column="39" />
           <folding>
             <element signature="e#26#35#0" expanded="true" />
-            <marker date="1498013688080" expanded="false" signature="26:103" ph="import ..." />
-            <marker date="1498013688080" expanded="true" signature="7439:8157" ph="..." />
+            <marker date="1498077335198" expanded="false" signature="26:103" ph="import ..." />
+            <marker date="1498077335198" expanded="true" signature="8114:8832" ph="..." />
           </folding>
         </state>
       </provider>
@@ -642,7 +656,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#34#0" expanded="true" />
+            <element signature="e#0#34#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -671,8 +685,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#26#35#0" expanded="true" />
-            <marker date="1498013688080" expanded="false" signature="26:103" ph="import ..." />
-            <marker date="1498013688080" expanded="true" signature="7439:8157" ph="..." />
+            <marker date="1498077335198" expanded="false" signature="26:103" ph="import ..." />
+            <marker date="1498077335198" expanded="true" signature="8114:8832" ph="..." />
           </folding>
         </state>
       </provider>
@@ -702,7 +716,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#34#0" expanded="true" />
+            <element signature="e#0#34#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -731,8 +745,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#26#35#0" expanded="true" />
-            <marker date="1498013688080" expanded="false" signature="26:103" ph="import ..." />
-            <marker date="1498013688080" expanded="true" signature="7439:8157" ph="..." />
+            <marker date="1498077335198" expanded="false" signature="26:103" ph="import ..." />
+            <marker date="1498077335198" expanded="true" signature="8114:8832" ph="..." />
           </folding>
         </state>
       </provider>
@@ -762,7 +776,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#34#0" expanded="true" />
+            <element signature="e#0#34#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -791,8 +805,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#26#35#0" expanded="true" />
-            <marker date="1498013688080" expanded="false" signature="26:103" ph="import ..." />
-            <marker date="1498013688080" expanded="true" signature="7439:8157" ph="..." />
+            <marker date="1498077335198" expanded="false" signature="26:103" ph="import ..." />
+            <marker date="1498077335198" expanded="true" signature="8114:8832" ph="..." />
           </folding>
         </state>
       </provider>
@@ -820,52 +834,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/teachers_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/students_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1065">
-          <caret line="71" column="27" selection-start-line="71" selection-start-column="27" selection-end-line="71" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test_imhere.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2443">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#267#279#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/courses_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1875">
-          <caret line="125" column="27" selection-start-line="125" selection-start-column="27" selection-end-line="125" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
+            <element signature="e#267#279#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -880,6 +854,92 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/models/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#34#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/users_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/teachers_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/courses_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1875">
+          <caret line="125" column="27" selection-start-line="125" selection-start-column="27" selection-end-line="125" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/imhere/templates/view_class.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-663">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/imhere/templates/main_student.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="26" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/imhere/templates/student_class_attendance.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="25" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/imhere/imhere.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="775">
+          <caret line="148" column="0" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
+          <folding>
+            <element signature="e#26#35#0" expanded="true" />
+            <marker date="1498077335198" expanded="false" signature="26:103" ph="import ..." />
+            <marker date="1498077335198" expanded="true" signature="8114:8832" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/sessions_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="43" column="31" selection-start-line="43" selection-start-column="31" selection-end-line="43" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/models/attendance_records_model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -888,14 +948,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/imhere/imhere.py">
+    <entry file="file://$PROJECT_DIR$/imhere/templates/base_student.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="846">
-          <caret line="354" column="49" selection-start-line="354" selection-start-column="49" selection-end-line="354" selection-end-column="49" />
+        <state relative-caret-position="30">
+          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/students_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="771">
+          <caret line="82" column="33" selection-start-line="82" selection-start-column="33" selection-end-line="82" selection-end-column="33" />
           <folding>
-            <element signature="e#26#35#0" expanded="true" />
-            <marker date="1498013688080" expanded="false" signature="26:103" ph="import ..." />
-            <marker date="1498013688080" expanded="true" signature="7439:8157" ph="..." />
+            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>

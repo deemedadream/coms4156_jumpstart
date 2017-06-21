@@ -1,21 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Student View</title>
-</head>
+{% extends 'base_student.html' %}
 
-<body>
-    <form action="/switch_type" method="POST">
-    <button name="type" value="teacher">Switch to teacher view</button>
+{% block content %}
+
+{% if data %}
+    <form method="post" action="{{ url_for('student_view_attendance') }}">
+        See attendance for your courses:
+        <br>
+        <select name="cid">
+            {% for c in data %}
+            <option value="{{ c['cid'] }}">{{ c['name'] }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="View Attendance">
     </form>
-    
-    <form action="/oauth/logout" method="POST">
-    <button name="logout">Logout</button>
-    </form><br>
-    
-    <center>
-    <h2>ImHere</h2><br>
+{% endif %}
 
     <!-- first show classes that have an available session -->
     {% for n in data %}
@@ -57,7 +55,4 @@
         {% endif %}
     {% endfor %}
 
-    </center>
-
-</body>
-</html>
+{% endblock %}
