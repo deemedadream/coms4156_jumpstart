@@ -1,6 +1,9 @@
-from model import Model
+from model import Model 
 from datetime import datetime, date
 from google.cloud import datastore
+import sessions_model
+import logging
+import sys
 
 class Teachers(Model):
 
@@ -36,12 +39,12 @@ class Teachers(Model):
             query.add_filter('cid', '=', course['cid'])
             sessions = list(query.fetch())
             for session in sessions:
-                if session['expires'].replace(tzinfo=None) > datetime.now():
-                    results.append(session)
-            if len(results) == 1:
-                course['secret'] = sessions[0]['secret']
-
-        # result = courses + sessions
+                if session['window_open'] == True:
+                    course['active'] = 1
+                    course['secret'] = sessions[0]['secret']
+                else:
+                    course['active'] = 0
+                    course['secret'] = sessions[0]['secret']
         return courses
 
 
@@ -50,8 +53,7 @@ class Teachers(Model):
         entity = datastore.Entity(
             key=key)
         entity.update({
-            'name': course_name,
-            'active': 0
+            'name': course_name
         })
         self.ds.put(entity)
         cid = entity.key.id

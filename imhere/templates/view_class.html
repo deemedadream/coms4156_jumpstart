@@ -17,7 +17,7 @@
 
     <h3>{{course_name}}</h3>
 
-    {% if secret %}
+    {% if secret != -1 %}
         <form method="POST" action="/teacher/view_class">
         <button name="close" value="{{cid}}">Close Attendance Window
         </button>
