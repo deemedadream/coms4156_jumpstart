@@ -3,17 +3,18 @@ import sys
 import pytest
 import flask
 
+import models.attendance_records_model as arm
+import models.students_model
+
 from models.model import Model
-from models import attendance_records_model as arm
-from models import students_model
 from google.cloud import datastore
 
 TEST_STUDENT = dict(sid=1, uni='tst9999')
 TEST_COURSES = [dict(tid=t, cid=c) for t,c in [(1, 1), (2, 2)]]
 TEST_ENROLLMENTS = [dict(sid=TEST_STUDENT['sid'], cid=c['cid'])
                     for c in TEST_COURSES]
-TEST_SESSIONS = [dict(cid=c[i]['cid'], seid=i)
-                 for i in range(len(TEST_COURSES))]
+TEST_SESSIONS = [dict(cid=c['cid'], seid=i)
+                 for i, c in enumerate(TEST_COURSES)]
 TEST_RECORD = dict(sid=TEST_STUDENT['sid'],
                    seid=TEST_SESSIONS[0]['seid'])
 TEST_EXCUSE = dict(sid=TEST_RECORD['sid'],
@@ -21,8 +22,6 @@ TEST_EXCUSE = dict(sid=TEST_RECORD['sid'],
                    excuse='Excuse me.')
 
 class TestAttendanceRecord(Model):
-
-    '''Mock Data'''
 
     @pytest.fixture(scope='module')
     def student_with_courses(self):
@@ -34,7 +33,7 @@ class TestAttendanceRecord(Model):
         )
         entity_s.update(TEST_STUDENT)
         ds.put(entity_s)
-        student = students_model.Students(
+        student = models.students_model.Students(
             TEST_STUDENT['sid']
         )
 
@@ -65,18 +64,18 @@ class TestAttendanceRecord(Model):
             entity_se.update(session)
         ds.put(entity_se)
 
-        return student
+        yield student
 
     '''Tests'''
 
     def test_insert_attendance_record(self, student_with_courses):
         session = TEST_SESSIONS[0]
-        record = arm.Attendance_Record(
+        record = arm.Attendance_Records(
             TEST_STUDENT['sid'],
             session['seid']
         )
         record.insert_attendance_record()
-        stored_record = arm.Attendance_Record.get_record(
+        stored_record = arm.Attendance_Records.get_record(
             TEST_STUDENT['sid'],
             session['seid']
         )
@@ -85,12 +84,12 @@ class TestAttendanceRecord(Model):
 
     def test_insert_attendance_record_without_enrollment(self):
         session = TEST_SESSIONS[0]
-        record = arm.Attendance_Record(
+        record = arm.Attendance_Records(
             TEST_STUDENT['sid'],
             session['seid']
         )
         record.insert_attendance_record()
-        results = arm.Attendance_Record.get_record(
+        results = arm.Attendance_Records.get_record(
             TEST_STUDENT['sid'],
             session['seid']
         )
@@ -103,16 +102,16 @@ class TestAttendanceRecord(Model):
         entity.update(TEST_RECORD)
         ds.put(entity)
 
-        ar = arm.Attendance_Record(**TEST_RECORD)
+        ar = arm.Attendance_Records(**TEST_RECORD)
         ar.remove_attendance_record()
 
-        results = arm.Attendance_Record.get_record(
+        results = arm.Attendance_Records.get_record(
             **TEST_RECORD
         )
         assert len(results) == 0
 
     def test_provide_excuse(self, student_with_courses):
-        ar = arm.Attendance_Record(**TEST_RECORD)
+        ar = arm.Attendance_Records(**TEST_RECORD)
         ar.provide_excuse(excuse=TEST_EXCUSE['excuse'])
 
         result = ar.get_excuse()
@@ -128,7 +127,7 @@ class TestAttendanceRecord(Model):
         entity.update(TEST_RECORD)
         ds.put(entity)
 
-        ar = arm.Attendance_Record(**TEST_RECORD)
+        ar = arm.Attendance_Records(**TEST_RECORD)
         ar.provide_excuse(TEST_EXCUSE['excuse'])
 
         result = ar.get_excuse()
@@ -141,7 +140,7 @@ class TestAttendanceRecord(Model):
         entity.update(TEST_EXCUSE)
         ds.put(entity)
 
-        ar = arm.Attendance_Record(**TEST_RECORD)
+        ar = arm.Attendance_Records(**TEST_RECORD)
         ar.remove_excuse()
 
         result = ar.get_excuse()
