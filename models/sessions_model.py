@@ -25,7 +25,7 @@ class Sessions(Model):
         #find or create session
         query = self.ds.query(kind='sessions')
         #query.add_filter('date', '=', self.date)
-        query.add_filter('cid', '=', new_cid)
+        query.add_filter('cid', '=', int(new_cid))
         #query.add_filter('secret', '>', -1)
         result = list(query.fetch())
         logging.warning("printing sessions_model at line 31================================================================================")
@@ -39,32 +39,36 @@ class Sessions(Model):
                 key=key)
             entity.update({
                 'seid' : -1,
-                'cid' : new_cid,
+                'cid' : int(new_cid),
                 'date' : self.date,
                 'window_open' : False,
                 'secret' : -1
             })
             self.ds.put(entity)
-            self.seid = entity.key.id
+            self.seid = int(entity.key.id)
             entity.update({
-                'seid' : self.seid
+                'seid' : int(self.seid)
             })
             logging.warning("printing sessions_model at line 52================================================================================")
             logging.warning(entity)
             self.ds.put(entity)
-            return entity
+            return self.seid
 
-        elif int(result[0]['seid']) > -1 and int(result[0]['cid']) > -1 and str(result[0]['date']) == 'blank':
+        elif result[0]['seid'] > -1 and result[0]['cid'] > -1 and result[0]['date'] == 'blank':
             key = self.ds.key('sessions', result[0]['seid'])
             entity = datastore.Entity(
                 key=key)
             entity.update({
-                'date' : self.date,
+                'seid' : result[0]['seid'],
+                'cid' : result[0]['cid'],
+                'window_open' : False,
+                'secret' : result[0]['secret'],
+                'date' : str(date.today()),
             })
             self.ds.put(entity)
             logging.warning("printing sessions_model at line 64================================================================================")
             logging.warning(entity)
-            return entity
+            return result[0]['seid']
             #result[0]['date']=str(date.today())
 
         else:
@@ -75,35 +79,37 @@ class Sessions(Model):
             self.secret = result[0]['secret']
             logging.warning("OLD SESSION sessions line 74================================================================================")
             logging.warning(result)
-            return result[0]
+            return result[0]['seid']
 
-    def open_window(self):
+    def open_window(self, seid):
         '''Opens a session for this course
         and returns the secret code for that session.
         '''
         self.date = str(date.today())
-        logging.warning("printing sessions_model at line 67================================================================================")
+        logging.warning("printing sessions_model at line 89================================================================================")
         logging.warning(self.seid)
         query = self.ds.query(kind='sessions')
-        query.add_filter('seid', '=', self.seid)
+        query.add_filter('seid', '=', seid)
         result = list(query.fetch())
-        logging.warning("printing sessions_model at line 72================================================================================")
+        logging.warning("printing sessions_model at line 94================================================================================")
         logging.warning(result)
         entity = result[0]
+        if result[0]['window_open'] == True:
+            return True
         #entity = self.open_session(self.cid)
         # auto-generated secret code for now
         randsecret = randint(1000, 9999)
         self.secret = int(randsecret)
         entity.update({
             'window_open' : True,
-            'secret': self.secret,
+            'secret': int(self.secret),
             'date' : self.date
         })
         logging.warning("printing sessions_model at line 81================================================================================")
         logging.warning(entity)
         self.ds.put(entity)
         query = self.ds.query(kind='sessions')
-        query.add_filter('seid', '=', self.seid)
+        query.add_filter('date', '=', self.date)
         result = list(query.fetch())
         logging.warning("printing sessions_model at line 87================================================================================")
         logging.warning(result)

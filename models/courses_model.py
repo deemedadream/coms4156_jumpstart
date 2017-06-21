@@ -118,3 +118,9 @@ class Courses(Model):
             })
         self.ds.put(entity)
         return entity
+
+    def get_num_sessions(self):
+        query = self.ds.query(kind='sessions')
+        query.add_filter('cid', '=', int(self.cid))
+        results = list(query.fetch())
+        return len(results)

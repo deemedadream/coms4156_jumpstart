@@ -146,11 +146,11 @@ def main_teacher():
             ssm.open_session(cid)
             ssm.close_window()
         elif "open" in request.form.keys():
-            cid = request.form["open"]
+            cid = int(request.form["open"])
             logging.warning("printing imhere at line 150================================================================================")
             logging.warning(cid)
-            ssm.open_session(cid)
-            ssm.open_window()
+            new_seid = ssm.open_session(cid)
+            ssm.open_window(new_seid)
             logging.warning("printing imhere at line 152================================================================================")
             logging.warning(ssm.window_open)
             logging.warning(ssm.cid)
@@ -237,8 +237,8 @@ def view_class():
         elif 'open' in request.form.keys():
             cid = request.form['open']
             cm.cid = cid
-            ssm.open_session(cid)
-            ssm.open_window()
+            new_seid = ssm.open_session(cid)
+            ssm.open_window(new_seid)
         else:
             cid = request.form['cid']
             cm.cid = cid
