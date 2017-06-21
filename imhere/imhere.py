@@ -6,14 +6,16 @@ import httplib2
 import oauth2client
 import apiclient
 import flask
+import logging
+import sys
 
 from uuid import uuid4
 from flask import Flask, render_template, request, g
 from models import users_model, index_model, teachers_model, students_model, \
-        courses_model, model
+        courses_model, sessions_model, model
 from google.cloud import datastore
 
-
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 app.secret_key = str(uuid4())
@@ -133,19 +135,18 @@ def main_student():
 
 @app.route('/teacher/', methods=['GET', 'POST'])
 def main_teacher():
-    tm = teachers_model.Teachers(flask.session['id'])
-
+    tid = flask.session['id']
+    tm = teachers_model.Teachers(tid)
+    ssm = sessions_model.Sessions()
     if request.method == 'POST':
-        cm = courses_model.Courses()
         if "close" in request.form.keys():
             cid = request.form["close"]
-            cm.cid = cid
-            cm.close_session(cm.get_active_session())
+            ssm.open_session(cid)
+            ssm.close_window()
         elif "open" in request.form.keys():
-            cid = request.form["open"]
-            cm.cid = cid
-            cm.open_session()
-
+            cid = int(request.form["open"])
+            new_seid = ssm.open_session(cid)
+            ssm.open_window(new_seid)
     courses = tm.get_courses_with_session()
     empty = True if len(courses) == 0 else False
     context = dict(data=courses)
@@ -154,7 +155,8 @@ def main_teacher():
 
 @app.route('/teacher/add_class', methods=['POST', 'GET'])
 def add_class():
-    tm = teachers_model.Teachers(flask.session['id'])
+    tid = flask.session['id']
+    tm = teachers_model.Teachers(tid)
 
     if request.method == 'GET':
         return render_template('add_class.html')
@@ -173,7 +175,10 @@ def add_class():
         # then create course and add students to course
         course_name = request.form['classname']
         cid = tm.add_course(course_name)
-        cm = courses_model.Courses(cid)
+        cm = courses_model.Courses()
+        #create first session
+        ssm = sessions_model.Sessions()
+        ssm.open_session(cid)
 
         for uni in request.form['unis'].split('\n'):
             uni = uni.strip('\r')
@@ -206,15 +211,18 @@ def view_class():
 
     elif request.method == 'POST':
         cm = courses_model.Courses()
+        ssm = sessions_model.Sessions()
 
         if 'close' in request.form.keys():
             cid = request.form['close']
             cm.cid = cid
-            cm.close_session(cm.get_active_session())
+            ssm.open_session(cid)
+            ssm.close_window()
         elif 'open' in request.form.keys():
             cid = request.form['open']
             cm.cid = cid
-            cm.open_session()
+            new_seid = ssm.open_session(cid)
+            ssm.open_window(new_seid)
         else:
             cid = request.form['cid']
             cm.cid = cid
@@ -228,8 +236,8 @@ def view_class():
             uni = request.form['remove_student']
             res = cm.remove_student(uni)
 
-        course_name = cm.get_course_name()
-        secret = cm.get_secret_code()
+        course_name = cm.course_name
+        secret = ssm.get_secret_code()
         num_sessions = cm.get_num_sessions()
         students = cm.get_students()
         students_with_ar = []

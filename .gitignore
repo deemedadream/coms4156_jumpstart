@@ -102,3 +102,6 @@ credentials.tar.gz
 # Backup files
 *.*~
 
+# .idea files
+.idea
+
