@@ -8,6 +8,7 @@
             border: 1px solid black;
         }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 </head>
 
 <body>
@@ -41,7 +42,9 @@
     <th>
     Add Student to Class:<br>
     <form method="POST" action="/teacher/view_class">
-        <input type="text" required name="add_student" placeholder="uni">
+        <textarea required id="unis" name="add_student" placeholder="uni"></textarea>
+        <br>
+        <input type="file" id="csvFileInput" onchange="handleFiles(this.files, true)" accept=".csv">
         <br>
         <button name="cid" value={{cid}}>add</button>
     </form>
@@ -51,7 +54,9 @@
     <th>
     Del Student from Class:<br>
     <form method="POST" action="/teacher/view_class">
-        <input type="text" required name="remove_student" placeholder="uni">
+        <textarea required id="rmunis" name="remove_student" placeholder="uni"></textarea>
+        <br>
+        <input type="file" id="csvFileInput" onchange="handleFiles(this.files, false)" accept=".csv">
         <br>
         <button name="cid" value={{cid}}>remove</button>
     </form>
@@ -102,5 +107,74 @@
 
     <a href="/teacher/">Home</a>
     </center>
+    <script>
+        var add = false;
+        function handleFiles(files, bool) {
+            add = bool;
+          // Check for the various File API support.
+          if (window.FileReader) {
+              // FileReader are supported.
+              getAsText(files[0]);
+          } else {
+              alert('FileReader are not supported in this browser.');
+          }
+        }
+
+        function getAsText(fileToRead) {
+          var reader = new FileReader();
+          // Read file into memory as UTF-8
+          reader.readAsText(fileToRead);
+          // Handle errors load
+          reader.onload = loadHandler;
+          reader.onerror = errorHandler;
+        }
+
+        function loadHandler(event) {
+          var csv = event.target.result;
+          processData(csv);
+        }
+
+        function processData(csv) {
+            var allTextLines = csv.split(/\r\n|\n/);
+            var lines = [];
+            for (var i=0; i<allTextLines.length; i++) {
+                var data = allTextLines[i].split(';');
+                    var tarr = [];
+                    for (var j=0; j<data.length; j++) {
+                        tarr.push(data[j]);
+                    }
+                    lines.push(tarr);
+            }
+            first = true;
+            lines.forEach(function(line){
+                if (add){ textarea = "#unis"}
+                else { textarea = "#rmunis"}
+                //if(add){
+                    if(first){
+                        $(textarea).val();
+                        first = false;
+                    } else {
+                        $(textarea).val($(textarea).val() + line + "\n");
+                    }
+                // } else {
+                //     if(first){
+                //         $("#rmunis").val();
+                //         first = false;
+                //     } else {
+                //         $("#rmunis").val($("#rmunis").val() + line + "\n");
+                //     }
+                // }
+
+            })
+          //console.log(lines);
+        }
+
+        function errorHandler(evt) {
+          if(evt.target.error.name == "NotReadableError") {
+              alert("Canno't read file !");
+          }
+        }
+    </script>
+
 </body>
 </html>

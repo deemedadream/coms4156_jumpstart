@@ -230,11 +230,17 @@ def view_class():
         res = 0
         uni = None
         if 'add_student' in request.form.keys():
-            uni = request.form['add_student']
-            res = cm.add_student(uni)
+            for uni in request.form['add_student'].split('\n'):
+                uni = uni.strip('\r')
+                res = cm.add_student(uni)
+            #uni = request.form['add_student']
+            #res = cm.add_student(uni)
         elif 'remove_student' in request.form.keys():
-            uni = request.form['remove_student']
-            res = cm.remove_student(uni)
+            for uni in request.form['remove_student'].split('\n'):
+                uni = uni.strip('\r')
+                res = cm.remove_student(uni)
+            #uni = request.form['remove_student']
+            #res = cm.remove_student(uni)
 
         course_name = cm.course_name
         secret = ssm.get_secret_code()

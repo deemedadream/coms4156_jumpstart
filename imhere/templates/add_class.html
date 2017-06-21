@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Add a Class</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 </head>
 
 <body>
+
     <center>
     <h2>ImHere</h2><br>
 
@@ -14,14 +16,76 @@
         Name: <input type="text" name="classname" required><br><br>
 
         <h4>Student Unis</h4>
-        <textarea rows="6" cols="50" placeholder="Please enter one uni per line" name="unis"></textarea><br>
+        <textarea id="unis" rows="6" cols="50" placeholder="Please enter one uni per line" name="unis"></textarea><br>
+        <input type="file" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv">
         <button>Create Class</button>
     </form><br>
 
     {% if invalid_uni %}
-    <font color="red">Invalid UNI's entered, please recreate the class</font> 
+    <font color="red">Invalid UNI's entered, please recreate the class</font>
     {% endif %}
 
     </center>
+    <script>
+    /* Code adapted from
+     https://mounirmesselmeni.github.io/2012/11/20/reading-csv-file-with-javascript-and-html5-file-api/
+     */
+    $(document).ready(function(){
+
+    })
+    function handleFiles(files) {
+      // Check for the various File API support.
+      if (window.FileReader) {
+          // FileReader are supported.
+          getAsText(files[0]);
+      } else {
+          alert('FileReader are not supported in this browser.');
+      }
+    }
+
+    function getAsText(fileToRead) {
+      var reader = new FileReader();
+      // Read file into memory as UTF-8
+      reader.readAsText(fileToRead);
+      // Handle errors load
+      reader.onload = loadHandler;
+      reader.onerror = errorHandler;
+    }
+
+    function loadHandler(event) {
+      var csv = event.target.result;
+      processData(csv);
+    }
+
+    function processData(csv) {
+        var allTextLines = csv.split(/\r\n|\n/);
+        var lines = [];
+        for (var i=0; i<allTextLines.length; i++) {
+            var data = allTextLines[i].split(';');
+                var tarr = [];
+                for (var j=0; j<data.length; j++) {
+                    tarr.push(data[j]);
+                }
+                lines.push(tarr);
+        }
+        first = true;
+        lines.forEach(function(line){
+            if(first){
+                $("#unis").val();
+                first = false;
+            } else {
+                $("#unis").val($("#unis").val() + line + "\n");
+            }
+
+        })
+      //console.log(lines);
+    }
+
+    function errorHandler(evt) {
+      if(evt.target.error.name == "NotReadableError") {
+          alert("Canno't read file !");
+      }
+    }
+    </script>
 </body>
 </html>
