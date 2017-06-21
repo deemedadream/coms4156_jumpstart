@@ -71,14 +71,18 @@ class Students(Model):
         })
         self.ds.put(entity)
 
-    def get_num_attendance_records(self, cid):
+    def get_course_attendance(self, cid):
         query = self.ds.query(kind='sessions')
         query.add_filter('cid', '=', int(cid))
         sessions = list(query.fetch())
-        results = list()
+        results = dict()
         for session in sessions:
             query = self.ds.query(kind='attendance_records')
             query.add_filter('seid', '=', session['seid'])
             query.add_filter('sid', '=', self.sid)
-            results = results + list(query.fetch())
+            results[session.date] = len(list(query.fetch()))
+        return results
+
+    def get_num_attendance_records(self, cid):
+        results = self.get_course_attendance(cid)
         return len(results)

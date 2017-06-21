@@ -132,6 +132,17 @@ def main_student():
                     valid=valid,
                     **context)
 
+@app.route('/student/view_attendance', methods=['POST'])
+def student_view_attendance():
+    sm = students_model.Students(flask.session['id'])
+    courses = sm.get_courses()
+    records = sm.get_course_attendance(request.form['cid'])
+    return render_template(
+        'student_class_attendance.html',
+        courses=courses,
+        records=records
+    )
+
 
 @app.route('/teacher/', methods=['GET', 'POST'])
 def main_teacher():
