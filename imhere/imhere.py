@@ -254,6 +254,8 @@ def view_class():
             students_with_ar.append([student, student_uni, num_ar])
 
         context = dict(students=students_with_ar)
+        labels = ["9/17", "9/20", "9/22", "9/25", "9/27", "9/29", "10/1", "10/3", "10/5", "10/7"]
+        values = [83, 21, 34, 45, 15, 63, 87, 28, 49, 100]
         return render_template(
                 'view_class.html',
                 cid=cid,
@@ -262,6 +264,8 @@ def view_class():
                 num_sessions=num_sessions,
                 uni=uni,
                 res=res,
+                labels=labels,
+                values=values,
                 **context)
 
 

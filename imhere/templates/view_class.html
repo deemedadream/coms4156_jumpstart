@@ -9,6 +9,7 @@
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 </head>
 
 <body>
@@ -106,6 +107,8 @@
 
 
     <a href="/teacher/">Home</a>
+    <br>
+    <canvas id="graph" width="1600" height="900"></canvas>
     </center>
     <script>
         var add = false;
@@ -174,6 +177,48 @@
               alert("Canno't read file !");
           }
         }
+        var barData = {
+            labels : [{% for label in labels %}
+                            "{{label}}",
+                            {% endfor %}],
+            datasets : [
+            {
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+             data : [{% for value in values %}
+                          {{value}},
+                        {% endfor %}]
+            }
+            ]
+        }
+        var graph = document.getElementById("graph").getContext('2d');
+        var myGraph = new Chart(graph, {
+            type: 'bar',
+            data: barData,
+            options: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Class Attendance'
+                },
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: '% Attendance'
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Class Date'
+                        }
+                    }]
+                }
+            }
+
+        });
     </script>
 
 </body>
