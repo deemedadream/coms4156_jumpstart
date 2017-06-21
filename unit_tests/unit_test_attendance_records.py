@@ -4,7 +4,7 @@ import pytest
 import flask
 
 from models.model import Model
-from models import attendance_record_model as arm
+from models import attendance_records_model as arm
 from models import students_model
 from google.cloud import datastore
 
@@ -118,7 +118,7 @@ class TestAttendanceRecord(Model):
         result = ar.get_excuse()
         assert len(result) == 1
         assert result[0].sid == TEST_RECORD['sid']
-        assert result[0].seid = TEST_RECORD['seid']
+        assert result[0].seid == TEST_RECORD['seid']
         assert result[0].excuse == TEST_EXCUSE['excuse']
 
     def test_provide_excuse_without_absence(self, student_with_courses):
