@@ -132,15 +132,26 @@ def main_student():
                     valid=valid,
                     **context)
 
-@app.route('/student/view_attendance', methods=['POST'])
+@app.route('/student/view_attendance', methods=['GET', 'POST'])
 def student_view_attendance():
     sm = students_model.Students(flask.session['id'])
     courses = sm.get_courses()
-    records = sm.get_course_attendance(request.form['cid'])
+
+    #need to error check for when student is not enrolled in any courses
+    if request.method == 'POST':
+        cid = request.form['cid']
+        course_name = courses_model.Courses(cid).get_course_name()
+    else:
+        cid = courses[0]['cid']
+        course_name = courses[0]['name']
+
+    records = sm.get_course_attendance(cid)
+
     return render_template(
         'student_class_attendance.html',
         courses=courses,
-        records=records
+        records=records,
+        course_name=course_name
     )
 
 
