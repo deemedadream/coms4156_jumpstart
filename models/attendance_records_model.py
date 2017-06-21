@@ -10,6 +10,13 @@ class Attendance_Records(Model):
         self.excuse_provided = excuse_provided
         self.ds = self.get_client()
 
+    def get_record(self):
+        query = self.ds.query(kind="attendance_records")
+        query.add_filter("sid", "=", self.sid)
+        query.add_filter("seid", "=", self.seid)
+        result = list(query.fetch())
+        return result[0] if len(result) > 0 else []
+
     def insert_attendance_record(self):
         key = self.ds.key("attendance_records")
         entity = datastore.Entity(key=key)
@@ -24,8 +31,14 @@ class Attendance_Records(Model):
         query.add_filter("sid", "=", self.sid)
         query.add_filter("seid", "=", self.seid)
         result = list(query.fetch())
-        for record in result:
-            self.ds.delete(record)
+        self.ds.delete_multi(result)
+
+    def get_excuse(self):
+        query = self.ds.query(kind="excuses")
+        query.add_filter("sid", "=", self.sid)
+        query.add_filter("seid", "=", self.seid)
+        result = list(query.fetch())
+        return result[0] if len(result) > 0 else []
 
     def provide_excuse(self, excuse):
         key = self.ds.key("excuses")
@@ -42,8 +55,8 @@ class Attendance_Records(Model):
         query.add_filter("sid", "=", self.sid)
         query.add_filter("seid", "=", self.seid)
         result = list(query.fetch())
-        for excuse in result:
-            self.ds.delete(excuse)
+        self.ds.delete_multi(result)
+
 
 
 
