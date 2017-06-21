@@ -125,9 +125,24 @@ class Sessions(Model):
         else:
             return -1
 
-    def get_current_roster_size(self):
-        return 0
+    def get_current_roster_size(self, seid_count):
+        if seid_count is None:
+            seid_count = self.seid  
+        query = self.ds.query(kind='attendance_records_model')
+        query.add_filter('seid', '=', seid_count)
+        result = list(query.fetch())
+        roster_size = len(result)
+        return attendance_count
 
+    def get_attendance_count(self, seid_count)
+        if seid_count is None:
+            seid_count = self.seid  
+        query = self.ds.query(kind='attendance_records_model')
+        query.add_filter('signed_in', '=', True)
+        result = list(query.fetch())
+        attendance_count = len(result)
+        return attendance_count
+        
     def store_session(self):
         key = self.ds.key('sessions', self.seid)
         entity = datastore.Entity(

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View_student_record</title>
+	<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+</head>
+
+<body>
+    <form action="/switch_type" method="POST">
+    <button name="type" value="teacher">Switch to teacher view</button>
+    </form>
+    
+    <form action="/oauth/logout" method="POST">
+    <button name="logout">Logout</button>
+    </form><br>
+    
+    <center><h2>Your Courses</h2><br></center>
+    
+    
+  <table class="sortable">
+  <tr>
+    <th>Date</th>
+	<th>Session ID</th>
+    <th>Signed In</th>
+    <th>Message</th>
+  </tr>    
+  {% for item in table %}
+  <tr>
+    <td class="c3">{{item.ln_field}}</td>
+    <td class="c3" style="text-align:center"><h4>{{n['date']}}</h4></td>
+    <td class="c3" style="text-align:center">{{n['seid']}}</td>
+    <td class="c3" style="text-align:center">{{n['signed_in']}}</td>
+    <td class="c3" style="text-align:center">{{excuse_provided}}</td>
+  </tr>
+  {% endfor %}
+  </table>
+</body>
+</html>
