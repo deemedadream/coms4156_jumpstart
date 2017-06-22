@@ -197,7 +197,7 @@ def add_class():
         # then create course and add students to course
         course_name = request.form['classname']
         cid = tm.add_course(course_name)
-        cm = courses_model.Courses()
+        cm = courses_model.Courses(cid)
         #create first session
         ssm = sessions_model.Sessions()
         ssm.open_session(cid)
