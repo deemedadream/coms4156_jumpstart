@@ -122,7 +122,7 @@ def main_student():
             cid = request.form['cid']
             logging.warning("Printing students line 123 ===========================================================================================")
             logging.warning(cid)
-            actual_secret, seid = sm.get_secret_and_seid()
+            actual_secret, seid = sm.get_secret_and_seid(cid)
             logging.warning("Printing students line 126 ===========================================================================================")
             logging.warning(sm.get_secret_and_seid(cid))
             
@@ -140,15 +140,15 @@ def main_student():
 
 @app.route('/student/view_attendance', methods=['GET', 'POST'])
 def student_view_attendance():
-    sm = students_model.Students(111)#flask.session['id'])
+    sm = students_model.Students(flask.session['id'])
     ssm = sessions_model.Sessions()
 
     courses = sm.get_courses()
 
     #need to error check for when student is not enrolled in any courses
     if request.method == 'POST':
-        cid = 24  #request.form['cid']
-        course_name = "test" #courses_model.Courses(cid).get_course_name()
+        cid = request.form['cid']
+        course_name = courses_model.Courses(cid).get_course_name()
         '''query = ds.query(kind='sessions')
         query.add_filter('cid', '=', int(cid))
         sessions = list(query.fetch())

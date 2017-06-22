@@ -43,19 +43,23 @@ class Students(Model):
     def get_secret_and_seid(self, cid = None):
         if cid is None:
             cid = -1
-        query = self.ds.query(kind='enrolled_in')
+        '''query = self.ds.query(kind='enrolled_in')
 #        query.add_filter('sid', '=', int(self.sid))
-        enrolled_in = list(query.fetch())
+        enrolled_in = list(query.fetch())'''
+        logging.warning("Printing students line 49 ===========================================================================================")
+        logging.warning(cid)
         results = list()
-        for enrolled in enrolled_in:
-            query = self.ds.query(kind='sessions')
-            query.add_filter('cid', '=', cid)
-            query.add_filter('window_open', '=', True)
-            sessions = list(query.fetch())
-            for session in sessions:
-                if session['window_open']==True:
-                    results.append(session)
+        #for enrolled in enrolled_in:
+        query = self.ds.query(kind='sessions')
+        query.add_filter('cid', '=', int(cid))
+        query.add_filter('window_open', '=', True)
+        sessions = list(query.fetch())
+        for session in sessions:
+            if session['window_open']==True:
+                results.append(session)
             # results = results + list(query.fetch())
+        logging.warning("Printing students line 61 ===========================================================================================")
+        logging.warning(results)
         if len(results) == 1:
             secret = results[0]['secret']
             seid = results[0]['seid']
@@ -85,7 +89,7 @@ class Students(Model):
         entity = datastore.Entity(
             key=key)
         entity.update({
-            'sid': self.sid,
+            'sid': long(self.sid),
             'seid': int(seid),
             'signed_in': True
         })
@@ -103,6 +107,11 @@ class Students(Model):
             query.add_filter('sid', '=', self.sid)
             query.add_filter('cid', '=', int(cid))
             results = list(query.fetch())
+            logging.warning("Printing students line 110 ===========================================================================================")
+            logging.warning(cid)
+            logging.warning(self.sid)
+            logging.warning(session['seid'])
+            logging.warning(results)
             if results:
                 session['signed_in'] = results[0]['signed_in']
                 #session['message'] = results[0]['message']

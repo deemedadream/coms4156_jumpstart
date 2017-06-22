@@ -6,7 +6,7 @@ class Attendance_Records(Model):
     def __init__(self, sid, seid, signed_in=None, excuse_provided=False):
         if signed_in is None:
             signed_in = False
-        self.sid = sid
+        self.sid = int(sid)
         self.seid = int(seid)
         self.signed_in = signed_in
         self.excuse_provided = excuse_provided
@@ -23,7 +23,7 @@ class Attendance_Records(Model):
         key = self.ds.key("attendance_records")
         entity = datastore.Entity(key=key)
         entity.update({
-            'sid': self.sid,
+            'sid': int(self.sid),
             'seid': self.seid,
         })
         self.ds.put(entity)
