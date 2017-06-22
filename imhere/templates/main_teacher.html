@@ -1,34 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Teacher View</title>
-    <style>
-    .btn-link {
-        border:none;
-        outline:none;
-        background:none;
-        cursor:pointer;
-        color:#4863a8;
-        padding-top:1em;
-        text-decoration:underline;
-        font-family:inherit;
-        font-size:inherit;
-    }
-    </style>
-</head>
+{% extends 'base_teacher.html' %}
 
-<body>
-    <form action="/switch_type" method="POST">
-    <button name="type" value="student">Switch to student view</button>
-    </form>
-    
-    <form action="/oauth/logout" method="POST">
-    <button name="logout">Logout</button>
-    </form><br>
-
-    <center>
-    <h2>ImHere</h2>
+{% block content %}
+   		 
+	<br>
+	<br>
+	<br>
 
     <a href="/teacher/add_class">Add a Class</a>
     {% if not empty %}
@@ -68,3 +44,5 @@
     </center>
 </body>
 </html>
+
+{% endblock %}
