@@ -2,6 +2,7 @@ from model import Model
 from datetime import datetime, date
 from google.cloud import datastore
 import logging
+import copy
 import sys
 
 class Students(Model):
@@ -27,17 +28,20 @@ class Students(Model):
         for enrolledCourse in enrolledCourses:
             query = self.ds.query(kind='courses')
             query.add_filter('cid', '=', enrolledCourse['cid'])
-            courses = list(query.fetch())
+            courses.extend(list(query.fetch()))
             logging.warning("Printing students line 31 ===========================================================================================")
             logging.warning(courses)
+        final = copy.deepcopy(enrolledCourses)
         if courses:
             for course in courses:
                 query = self.ds.query(kind='sessions')
                 query.add_filter('cid', '=', course['cid'])
                 results = list(query.fetch())
+                logging.warning(results)
                 course['window_open'] = results[0]['window_open']
         logging.warning("Printing students line 39 ===========================================================================================")
         logging.warning(courses)
+        logging.warning(final)
         return courses
 
     def get_secret_and_seid(self, cid = None):
@@ -90,7 +94,7 @@ class Students(Model):
             key=key)
         entity.update({
             'seid': int(seid),
-            'sid': self.sid, 
+            'sid': self.sid,
             'signed_in': True
         })
         self.ds.put(entity)
