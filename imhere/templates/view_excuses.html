@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher View</title>
+    <style>
+    .btn-link {
+        border:none;
+        outline:none;
+        background:none;
+        cursor:pointer;
+        color:#4863a8;
+        padding-top:1em;
+        text-decoration:underline;
+        font-family:inherit;
+        font-size:inherit;
+    }
+    </style>
+</head>
+
+<body>
+    <form action="/switch_type" method="POST">
+    <button name="type" value="student">Switch to student view</button>
+    </form>
+
+    <form action="/oauth/logout" method="POST">
+    <button name="logout">Logout</button>
+    </form><br>
+
+    <center>
+
+    {% if courses_taught %}
+    <h2>View excuses for another course:</h2>
+    <form action="" method="POST">
+        <select name="cid">
+            {% for c in courses_taught %}
+            <option value="{{ c['cid'] }}">{{ c['name'] }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="View excuses">
+    </form>
+    {% else %}
+    <h2>You currently don't teach any courses.</h2>
+    <a href="{{ url_for('add_class') }}">Add Course</a>
+    {% endif %}
+
+    <br>
+
+    {% if post %}
+        <h2>Excuses for {{ course_name }}</h2>
+        <br>
+        {% for date in data %}
+            <h3>Session Date: {{ date }}</h3>
+            <tr>
+                <th>UNI</th>
+                <th>Excuse</th>
+            </tr>
+            {% for pair in data[date] %}
+                <tr>
+                    <td>pair[0]</td>
+                    <td>pair[1]</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+        {% for session in sessions %}
+            <tr>
+                <td>{{ session['date'] }}</td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <h2>Bruh.</h2>
+    {% endif %}
+    </center>
+</body>
+</html>

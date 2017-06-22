@@ -111,7 +111,6 @@ class Students(Model):
         for session in sessions:
             query = self.ds.query(kind='attendance_records')
             query.add_filter('seid', '=', session['seid'])
-            #query.add_filter('sid', '=', self.sid)
             results = list(query.fetch())
             logging.warning("Printing students line 110 ===========================================================================================")
             logging.warning(cid)
@@ -120,11 +119,16 @@ class Students(Model):
             logging.warning(len(results))
             if results:
                 session['signed_in'] = "Signed in"
-                #session['message'] = results[0]['message']
             else:
                 session['signed_in'] = "Not signed in"
         return sessions
 
+
+    #need to make more efficient
     def get_num_attendance_records(self, cid):
         results = self.get_course_attendance(cid)
-        return len(results)
+        num_ar = 0
+        for r in results.values():
+            if r['signed_in'] == "Signed in:
+                num_ar += 1
+        return num_ar

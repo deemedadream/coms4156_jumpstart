@@ -18,11 +18,17 @@
 <br>
 <h2>Your Attendance for {{ course_name }}</h2>
 <br>
+
 {% if records %}
     {% for date in records %}
         <tr>
             <td align="center">{{ date }}</td>
-            <td align="center">{{ records[date] }}</td>
+            <td align="center">{{ records[date][0] }}</td>
+            <td>
+                {% if records[date][0] == 0 %}
+                <a href="{{ url_for('add_excuse', seid=records[date][1]) }}">Submit Excuse</a>
+                {% endif %}
+            </td>
         </tr>
     {% endfor %}
 {% endif %}
