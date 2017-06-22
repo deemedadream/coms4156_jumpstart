@@ -132,9 +132,9 @@ class Sessions(Model):
         query.add_filter('seid', '=', seid_count)
         result = list(query.fetch())
         roster_size = len(result)
-        return attendance_count
+        return roster_size
 
-    def get_attendance_count(self, seid_count)
+    def get_attendance_count(self, seid_count):
         if seid_count is None:
             seid_count = self.seid  
         query = self.ds.query(kind='attendance_records_model')
