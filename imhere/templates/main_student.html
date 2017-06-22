@@ -13,11 +13,13 @@
         </select>
         <input type="submit" value="View Attendance">
     </form>
+{% else %}
+    <h4>You are not registered for any courses.</h4>
 {% endif %}
 
     <!-- first show classes that have an available session -->
     {% for n in data %}
-        {% if n['active'] == 1 %}
+        {% if n['window_open'] == True %}
 
             <h4>{{n['name']}}</h4>
 
@@ -30,6 +32,7 @@
             <form action="/student/" method="post">
                 Sign in now!
                 <input type="text" name="secret_code" placeholder="Secret Code">
+                <input type="hidden" value="{{n['cid']}}" name="cid">
                 <input type="submit" value="Submit">
             </form><br>
 

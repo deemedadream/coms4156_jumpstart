@@ -1,0 +1,39 @@
+{% extends 'base_student.html' %}
+
+{% block content %}
+	{% if courses %}
+  	   <form method="post" action="">
+          See attendance for your courses:
+          <br>
+          <select name="cid">
+              {% for c in courses %}
+              <option value="{{ c['cid'] }}">{{ c['name'] }}</option>
+              {% endfor %}
+          </select>
+          <input type="submit" value="View Attendance">
+      </form>
+	{% endif %}
+    <hr>
+	<br>
+	<br>
+    <h2>Your Attendance for {{ course_name }}</h2>
+    <br>
+    <table class="sortable">
+    <tr>
+      <th>Date</th>
+  	<th>Session ID</th>
+      <th>Signed In</th>
+      <th>Message</th>
+    </tr>
+    	{% if records %}    
+        {% for n in records %}
+        <tr>
+          <td class="c3" style="text-align:center"><h4>{{n['date']}}</h4></td>
+          <td class="c3" style="text-align:center">{{n['seid']}}</td>
+          <td class="c3" style="text-align:center">{{n['signed_in']}}</td>
+          <td class="c3" style="text-align:center">      </td>
+        </tr>
+        {% endfor %}
+      {% endif %}
+    </table>
+{% endblock %}

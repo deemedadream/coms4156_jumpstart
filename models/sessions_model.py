@@ -71,6 +71,8 @@ class Sessions(Model):
         '''Opens a session for this course
         and returns the secret code for that session.
         '''
+        if seid is None:
+            seid = self.seid 
         self.date = str(date.today())
         query = self.ds.query(kind='sessions')
         query.add_filter('seid', '=', seid)
@@ -78,12 +80,11 @@ class Sessions(Model):
         entity = result[0]
         if result[0]['window_open'] == True:
             return True
-        #entity = self.open_session(self.cid)
         # auto-generated secret code for now
         randsecret = randint(1000, 9999)
         self.secret = int(randsecret)
         entity.update({
-            'window_open' : True,
+            'window_open': True,
             'secret': int(self.secret),
             'date' : self.date
         })
@@ -125,9 +126,24 @@ class Sessions(Model):
         else:
             return -1
 
-    def get_current_roster_size(self):
-        return 0
+    def get_current_roster_size(self, seid_count = None):
+        if seid_count is None:
+            seid_count = self.seid  
+        query = self.ds.query(kind='attendance_records')
+        query.add_filter('seid', '=', seid_count)
+        result = list(query.fetch())
+        roster_size = len(result)
+        return roster_size
 
+    def get_attendance_count(self, seid_count = None):
+        if seid_count is None:
+            seid_count = self.seid  
+        query = self.ds.query(kind='attendance_records')
+        query.add_filter('signed_in', '=', True)
+        result = list(query.fetch())
+        attendance_count = len(result)
+        return attendance_count
+        
     def store_session(self):
         key = self.ds.key('sessions', self.seid)
         entity = datastore.Entity(
@@ -137,6 +153,6 @@ class Sessions(Model):
             'cid' : self.cid,
             'date' : self.date,
             'window_open' : self.window_open,
-            'secret' : -self.secret
+            'secret' : self.secret
             })
         self.ds.put(entity)

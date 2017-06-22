@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Remove a Class</title>
-</head>
-<body>
+{% extends 'base_teacher.html' %}
+
+{% block content %}
 <center>
 
-    <h2>ImHere</h2><br>
+    <h3>Class List</h3>
 
-    <h4>Class List</h4>
-
-    <table cellspacing="10">
+    <table class="table1" cellspacing="10">
 
         {% for n in data %}
         <tr>
@@ -30,3 +24,4 @@
 </center>
 </body>
 </html>
+{% endblock %}
