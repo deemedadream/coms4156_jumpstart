@@ -12,7 +12,7 @@ import sys
 from uuid import uuid4
 from flask import Flask, render_template, request, g
 from models import users_model, index_model, teachers_model, students_model, \
-        courses_model, sessions_model, model
+        courses_model, sessions_model, attendance_records_model, model
 from google.cloud import datastore
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -119,7 +119,13 @@ def main_student():
     elif request.method == 'POST':
         if 'secret_code' in request.form.keys():
             provided_secret = request.form['secret_code']
+            cid = request.form['cid']
+            logging.warning("Printing students line 123 ===========================================================================================")
+            logging.warning(cid)
             actual_secret, seid = sm.get_secret_and_seid()
+            logging.warning("Printing students line 126 ===========================================================================================")
+            logging.warning(sm.get_secret_and_seid(cid))
+            
             if int(provided_secret) == int(actual_secret):
                 sm.insert_attendance_record(seid)
                 valid = True
@@ -134,21 +140,31 @@ def main_student():
 
 @app.route('/student/view_attendance', methods=['GET', 'POST'])
 def student_view_attendance():
-    sm = students_model.Students(flask.session['id'])
+    sm = students_model.Students(111)#flask.session['id'])
+    ssm = sessions_model.Sessions()
+
     courses = sm.get_courses()
 
     #need to error check for when student is not enrolled in any courses
     if request.method == 'POST':
-        cid = request.form['cid']
-        course_name = courses_model.Courses(cid).get_course_name()
+        cid = 24  #request.form['cid']
+        course_name = "test" #courses_model.Courses(cid).get_course_name()
+        '''query = ds.query(kind='sessions')
+        query.add_filter('cid', '=', int(cid))
+        sessions = list(query.fetch())
+        for session in sessions:
+            query = self.ds.query(kind='attendance_records')
+            query.add_filter('cid', '=', int(session[0]['seid']))'''
+
     else:
         cid = courses[0]['cid']
         course_name = courses[0]['name']
 
     records = sm.get_course_attendance(cid)
-
+    logging.warning("Printing imhere line 159 ===========================================================================================")
+    logging.warning(records)
     return render_template(
-        'student_class_attendance.html',
+        'view_student_record.html',
         courses=courses,
         records=records,
         course_name=course_name

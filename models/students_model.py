@@ -1,6 +1,8 @@
 from model import Model
 from datetime import datetime, date
 from google.cloud import datastore
+import logging
+import sys
 
 class Students(Model):
 
@@ -18,20 +20,37 @@ class Students(Model):
         query = self.ds.query(kind='enrolled_in')
         query.add_filter('sid', '=', self.sid)
         enrolledCourses = list(query.fetch())
+        logging.warning("Printing students line 23 ===========================================================================================")
+        logging.warning(enrolledCourses)
         result = list()
+        courses = list()
         for enrolledCourse in enrolledCourses:
             query = self.ds.query(kind='courses')
             query.add_filter('cid', '=', enrolledCourse['cid'])
-            result = result + list(query.fetch())
-        return result
+            courses = list(query.fetch())
+            logging.warning("Printing students line 31 ===========================================================================================")
+            logging.warning(courses)
+        if courses:
+            for course in courses:
+                query = self.ds.query(kind='sessions')
+                query.add_filter('cid', '=', course['cid'])
+                results = list(query.fetch())
+                course['window_open'] = results[0]['window_open']
+        logging.warning("Printing students line 39 ===========================================================================================")
+        logging.warning(courses)
+        return courses
 
-    def get_secret_and_seid(self):
+    def get_secret_and_seid(self, cid = None):
+        if cid is None:
+            cid = -1
         query = self.ds.query(kind='enrolled_in')
+#        query.add_filter('sid', '=', int(self.sid))
         enrolled_in = list(query.fetch())
         results = list()
         for enrolled in enrolled_in:
             query = self.ds.query(kind='sessions')
-            query.add_filter('cid', '=', enrolled['cid'])
+            query.add_filter('cid', '=', cid)
+            query.add_filter('window_open', '=', True)
             sessions = list(query.fetch())
             for session in sessions:
                 if session['window_open']==True:
@@ -67,21 +86,27 @@ class Students(Model):
             key=key)
         entity.update({
             'sid': self.sid,
-            'seid': int(seid)
+            'seid': int(seid),
+            'signed_in': True
         })
         self.ds.put(entity)
+
 
     def get_course_attendance(self, cid):
         query = self.ds.query(kind='sessions')
         query.add_filter('cid', '=', int(cid))
         sessions = list(query.fetch())
-        results = dict()
+        results = list()
         for session in sessions:
             query = self.ds.query(kind='attendance_records')
             query.add_filter('seid', '=', session['seid'])
             query.add_filter('sid', '=', self.sid)
-            results[session['date']] = len(list(query.fetch()))
-        return results
+            query.add_filter('cid', '=', int(cid))
+            results = list(query.fetch())
+            if results:
+                session['signed_in'] = results[0]['signed_in']
+                #session['message'] = results[0]['message']
+        return sessions
 
     def get_num_attendance_records(self, cid):
         results = self.get_course_attendance(cid)
