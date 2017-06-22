@@ -13,7 +13,9 @@ from uuid import uuid4
 from flask import Flask, render_template, request, g
 from models import users_model, index_model, teachers_model, students_model, \
         courses_model, sessions_model, model
+from models import attendance_records_model as arm
 from google.cloud import datastore
+from datetime import date
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -154,6 +156,35 @@ def student_view_attendance():
         course_name=course_name
     )
 
+#Need to fix ARM; figure out how to best refactor get functions as class methods
+@app.route('/student/view_excuses')
+def student_view_excuses():
+    sid = flask.session['id']
+    excuses = arm.Attendance_Records().get_excuses_multi(sid=sid)
+    return render_template("student_excuses.html",
+                           excuses=excuses)
+
+
+@app.route('/student/add_excuse/',
+           defaults={'seid': None},
+           methods=['GET', 'POST'])
+@app.route('/student/add_excuse/<seid>', methods=['GET', 'POST'])
+def add_excuse(seid):
+    if request.method == 'POST':
+        sid = flask.session['id']
+        seid = int(request.form['seid'])
+        excuse = request.form['excuse']
+        record = arm.Attendance_Records(sid=sid,
+                                        seid=seid)
+        record.provide_excuse(excuse)
+        return flask.redirect(flask.url_for('student_view_excuses'))
+    else:
+        #MOCK DATA: NEED TO ADD GET_SESSION METHOD
+        session = dict(seid=1 if seid is None else seid,
+                       date=date.today())
+        return render_template('add_excuse.html',
+                               session=session)
+
 
 @app.route('/teacher/', methods=['GET', 'POST'])
 def main_teacher():
@@ -289,6 +320,41 @@ def view_class():
                 labels=labels,
                 values=values,
                 **context)
+
+
+@app.route('/teacher/view_excuses', methods=['GET','POST'])
+def view_excuses():
+    context = dict(post=False, data=dict())
+    #get sessions for selected course id and submitted excuses
+    if request.method == 'POST':
+        cid = request.form['cid']
+        course = courses_model.Courses(cid)
+        sessions = course.get_sessions()
+        results = dict()
+
+        #get unis and excuse messages for all sessions
+        sm = students_model.Students(1)
+        for s in sessions:
+            excuses = arm.Attendance_Records().get_excuses_multi(sid=s['seid'])
+            unis = []
+            for e in excuses:
+                sm.sid = e['sid']
+                unis.append(sm.get_uni())
+            results[s['date']] = [(u, e['excuse']) \
+                                  for (u, e) in zip(unis, excuses)]
+        context['post'] = True
+        context['data'] = results
+        context['course_name'] = course.get_course_name()
+        context['sessions'] = sessions
+
+    #get courses
+    tid = flask.session['id']
+    teacher = teachers_model.Teachers(tid)
+    courses_taught = teacher.get_courses()
+
+    return render_template("view_excuses.html",
+                           courses_taught=courses_taught,
+                           **context)
 
 
 @app.route('/register', methods=['GET', 'POST'])

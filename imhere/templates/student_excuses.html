@@ -1,0 +1,9 @@
+{% extends 'base_student.html' %}
+{% block content %}
+
+{% for excuse in excuses %}
+{{ excuse['excuse'] }}
+<br>
+{% endfor %}
+
+{% endblock %}

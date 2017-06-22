@@ -80,9 +80,14 @@ class Students(Model):
             query = self.ds.query(kind='attendance_records')
             query.add_filter('seid', '=', session['seid'])
             query.add_filter('sid', '=', self.sid)
-            results[session['date']] = len(list(query.fetch()))
+            results[session['date']] = (len(list(query.fetch())), session['seid'])
         return results
 
+    #need to make more efficient
     def get_num_attendance_records(self, cid):
         results = self.get_course_attendance(cid)
-        return len(results)
+        num_ar = 0
+        for r in results.values():
+            if r[0]:
+                num_ar += 1
+        return num_ar
