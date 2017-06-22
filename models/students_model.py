@@ -89,11 +89,17 @@ class Students(Model):
         entity = datastore.Entity(
             key=key)
         entity.update({
-            'sid': long(self.sid),
-            'seid': int(seid),
+            'sid': int(self.sid),
             'signed_in': True
         })
         self.ds.put(entity)
+        query = self.ds.query(kind='attendance_records')
+        query.add_filter('seid', '=', int(seid))
+        result = list(query.fetch())
+        result.update({
+            'seid': int(seid),
+        })
+        self.ds.put(result)
 
 
     def get_course_attendance(self, cid):
