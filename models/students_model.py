@@ -89,17 +89,18 @@ class Students(Model):
         entity = datastore.Entity(
             key=key)
         entity.update({
-            'sid': int(self.sid),
+            'seid': int(seid),
+            'sid': self.sid, 
             'signed_in': True
         })
         self.ds.put(entity)
-        query = self.ds.query(kind='attendance_records')
+        '''query = self.ds.query(kind='attendance_records')
         query.add_filter('seid', '=', int(seid))
         result = list(query.fetch())
         result.update({
             'seid': int(seid),
         })
-        self.ds.put(result)
+        self.ds.put(result)'''
 
 
     def get_course_attendance(self, cid):
@@ -110,17 +111,18 @@ class Students(Model):
         for session in sessions:
             query = self.ds.query(kind='attendance_records')
             query.add_filter('seid', '=', session['seid'])
-            query.add_filter('sid', '=', self.sid)
-            query.add_filter('cid', '=', int(cid))
+            #query.add_filter('sid', '=', self.sid)
             results = list(query.fetch())
             logging.warning("Printing students line 110 ===========================================================================================")
             logging.warning(cid)
             logging.warning(self.sid)
             logging.warning(session['seid'])
-            logging.warning(results)
+            logging.warning(len(results))
             if results:
-                session['signed_in'] = results[0]['signed_in']
+                session['signed_in'] = "Signed in"
                 #session['message'] = results[0]['message']
+            else:
+                session['signed_in'] = "Not signed in"
         return sessions
 
     def get_num_attendance_records(self, cid):
