@@ -17,11 +17,12 @@
     <h4>You are not registered for any courses.</h4>
 {% endif %}
 
-    <!-- first show classes that have an available session -->
+    <!-- Showing all of the Student's classes on this page. 3 cases: -->
     {% for n in data %}
-        {% if n['window_open'] == True %}
+        <!-- Window open. Student has not signed in before. -->
+        {% if n['window_open'] == True and n['signed_in'] == False %}
 
-            <h4>{{n['name']}}</h4>
+            <br><b><font size="7">{{n['name']}}</font></b><br>
 
             {% if valid %}
                 Successful sign-in!
@@ -45,17 +46,15 @@
             {% endif %}
 
         {% endif %}
-    {% endfor %}
-
-    <!-- then show classes that are not ongoing at this time/date -->
-    {% for n in data %}
-        {% if n['active'] == 0 %}
-
-            <h4>{{n['name']}}</h4>
-            No sign-in window available!
-            <br>
-
+        <!-- Window open or closed. Student has signed in before. -->
+        {% if n['signed_in'] == True %}
+           <br><font size="6"> {{n['name']}}</font><br>
+            Successfully signed in to today's session   
+        {% endif %}
+        <!-- Window closed. Student has not signed in before. -->
+        {% if n['window_open'] == False and n['signed_in'] == False %}
+            <br><font size="6">{{n['name']}}</font><br>
+            No sign-in window available.
         {% endif %}
     {% endfor %}
-
 {% endblock %}

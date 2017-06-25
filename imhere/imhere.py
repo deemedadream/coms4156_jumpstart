@@ -107,8 +107,11 @@ def login():
 def main_student():
     sm = students_model.Students(flask.session['id'])
     courses = sm.get_courses()
+    logging.warning("Printing students line 50 ===========================================================================================")
+    logging.warning("courses")
     context = dict(data=courses)
     signed_in = True if sm.has_signed_in() else False
+    
 
     if request.method == 'GET':
         return render_template(
