@@ -109,8 +109,11 @@ def login():
 def main_student():
     sm = students_model.Students(flask.session['id'])
     courses = sm.get_courses()
+    logging.warning("Printing students line 50 ===========================================================================================")
+    logging.warning("courses")
     context = dict(data=courses)
     signed_in = True if sm.has_signed_in() else False
+    
 
     if request.method == 'GET':
         return render_template(
@@ -244,7 +247,7 @@ def add_class():
         # then create course and add students to course
         course_name = request.form['classname']
         cid = tm.add_course(course_name)
-        cm = courses_model.Courses()
+        cm = courses_model.Courses(cid)
         #create first session
         ssm = sessions_model.Sessions()
         ssm.open_session(cid)

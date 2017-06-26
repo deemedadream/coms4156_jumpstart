@@ -2,6 +2,7 @@ from model import Model
 from datetime import datetime, date
 from google.cloud import datastore
 import logging
+import copy
 import sys
 
 class Students(Model):
@@ -20,24 +21,42 @@ class Students(Model):
         query = self.ds.query(kind='enrolled_in')
         query.add_filter('sid', '=', self.sid)
         enrolledCourses = list(query.fetch())
-        logging.warning("Printing students line 23 ===========================================================================================")
+        logging.warning("Printing students line 24 ===========================================================================================")
         logging.warning(enrolledCourses)
-        result = list()
+        attendance_records = list()
+        sessions = list()
         courses = list()
         for enrolledCourse in enrolledCourses:
             query = self.ds.query(kind='courses')
             query.add_filter('cid', '=', enrolledCourse['cid'])
-            courses = list(query.fetch())
-            logging.warning("Printing students line 31 ===========================================================================================")
+            courses.extend(list(query.fetch()))
+            logging.warning("Printing students line 33 ===========================================================================================")
             logging.warning(courses)
+        final = copy.deepcopy(enrolledCourses)
         if courses:
             for course in courses:
                 query = self.ds.query(kind='sessions')
                 query.add_filter('cid', '=', course['cid'])
-                results = list(query.fetch())
-                course['window_open'] = results[0]['window_open']
-        logging.warning("Printing students line 39 ===========================================================================================")
-        logging.warning(courses)
+                sessions = list(query.fetch())
+                logging.warning(sessions)
+                if sessions:
+                    course['window_open'] = sessions[0]['window_open']
+                    logging.warning("Printing students line 43 ===========================================================================================")
+                    logging.warning(courses)
+                    for session in sessions:
+                        query = self.ds.query(kind='attendance_records')
+                        query.add_filter('seid', '=', session['seid'])
+                        query.add_filter('sid', '=', self.sid)
+                        attendance_records = list(query.fetch())
+                        if attendance_records:
+                            course['signed_in'] = attendance_records[0]['signed_in']
+                            logging.warning("Printing students line 50 ===========================================================================================")
+                            logging.warning(courses)
+                        else:
+                            course['signed_in'] = False
+                else:
+                    course['window_open'] = False
+        logging.warning(final)
         return courses
 
     def get_secret_and_seid(self, cid = None):
@@ -90,7 +109,7 @@ class Students(Model):
             key=key)
         entity.update({
             'seid': int(seid),
-            'sid': self.sid, 
+            'sid': self.sid,
             'signed_in': True
         })
         self.ds.put(entity)
