@@ -18,15 +18,27 @@ class Courses(Model):
         result = list(query.fetch())
         return result[0]['name']
 
-    def get_students(self):
+    def get_students(self, cid2 = None):
+        if cid2 is None:
+            cid2 = self.cid
         query = self.ds.query(kind='enrolled_in')
-        query.add_filter('cid', '=', int(self.cid))
+        query.add_filter('cid', '=', int(cid2))
         enrolled_in = list(query.fetch())
         results = list()
+        logging.warning('enrolled in')
+        logging.warning(enrolled_in)
         for enrolled in enrolled_in:
             query = self.ds.query(kind='user')
             query.add_filter('id', '=', enrolled['sid'])
             results = results + list(query.fetch())
+        return results
+
+    def get_students_sids(self, cid2 = None):
+        if cid2 is None:
+            cid2 = self.cid
+        query = self.ds.query(kind='enrolled_in')
+        query.add_filter('cid', '=', int(cid2))
+        results = list(query.fetch())
         return results
 
     def add_student(self, uni):
@@ -98,7 +110,7 @@ class Courses(Model):
     def get_sessions(self, single_seid = None):
         if single_seid is None:
             query = self.ds.query(kind='sessions')
-            query.add_filter('cid', '=', self.cid)
+            query.add_filter('cid', '=', int(self.cid))
             results = list(query.fetch())
             return results
         else:

@@ -25,8 +25,11 @@ class Attendance_Records(Model):
         entity.update({
             'sid': int(self.sid),
             'seid': self.seid,
+            'signed_in' : False
         })
         self.ds.put(entity)
+
+
 
     def remove_attendance_record(self):
         query = self.ds.query(kind="attendance_records")

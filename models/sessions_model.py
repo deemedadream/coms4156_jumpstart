@@ -17,7 +17,7 @@ class Sessions(Model):
 
     def open_session(self, new_cid = None):
         if new_cid is None:
-            new_cid = self.cid  
+            new_cid = self.cid
         #find or create session
         query = self.ds.query(kind='sessions')
         #query.add_filter('date', '=', self.date)
@@ -72,7 +72,7 @@ class Sessions(Model):
         and returns the secret code for that session.
         '''
         if seid is None:
-            seid = self.seid 
+            seid = self.seid
         self.date = str(date.today())
         query = self.ds.query(kind='sessions')
         query.add_filter('seid', '=', seid)
@@ -128,22 +128,27 @@ class Sessions(Model):
 
     def get_current_roster_size(self, seid_count = None):
         if seid_count is None:
-            seid_count = self.seid  
+            seid_count = self.seid
         query = self.ds.query(kind='attendance_records')
         query.add_filter('seid', '=', seid_count)
         result = list(query.fetch())
+        logging.warning('sessions_model ==================')
+        logging.warning(result)
         roster_size = len(result)
         return roster_size
 
     def get_attendance_count(self, seid_count = None):
         if seid_count is None:
-            seid_count = self.seid  
+            seid_count = self.seid
         query = self.ds.query(kind='attendance_records')
+        query.add_filter('seid', '=', seid_count)
         query.add_filter('signed_in', '=', True)
         result = list(query.fetch())
+        logging.warning('sessions_model atendance ====================')
+        logging.warning(result)
         attendance_count = len(result)
         return attendance_count
-        
+
     def store_session(self):
         key = self.ds.key('sessions', self.seid)
         entity = datastore.Entity(

@@ -15,7 +15,7 @@ from models import users_model, index_model, teachers_model, students_model, cou
 from google.cloud import datastore
 
 class TestUnits(Model):
-    
+
     @pytest.fixture(scope="module")
     def ds():
         ds = model.Model().get_client()
@@ -43,7 +43,7 @@ class TestUnits(Model):
             'date': ''
         })
         return entity
-    
+
     def lower_partition_session_entity2(self):
         ds = model.Model().get_client()
         key = ds.key('courses')
@@ -54,36 +54,36 @@ class TestUnits(Model):
             'date': ''
         })
         return entity
-        
+
         '''Blackbox tests lower bounds'''
-    
+
     def test_sessions_model_constructor(self):
         ssm = sessions_model.Sessions(0)
         assert ssm.seid == 0
         assert ssm.window_open == False
-    
+
     def test_courses_model_constructor_no_cid(self):
         cm = courses_model.Courses()
         cm.cid = 0
         assert cm.cid == 0
-        assert cm.course_name == ""        
-        
+        assert cm.course_name == ""
+
         '''Blackbox tests upper bounds'''
-    
+
     def test_courses_model_constructor(self):
         cm = courses_model.Courses(99999999)
         assert cm.cid == 99999999
         assert cm.course_name == ""
-    
+
     def test_courses_model_constructor_no_cid(self):
         cm = courses_model.Courses()
         cm.cid = 99999999
         assert cm.cid == 99999999
-        assert cm.course_name == ""   
+        assert cm.course_name == ""
 
     def setup_method(self, test_sessions_model):
         pass
-     
+
     def test_open_session(self):
         self.ds = self.get_client()
         cm = courses_model.Courses()
@@ -105,7 +105,7 @@ class TestUnits(Model):
         assert ssm.window_open == False
         ssm.open_window()
         ssm.open_session(55)
-        assert ssm.open_window() == True 
+        assert ssm.open_window() == True
         assert ssm.window_open == True
         self.ds = self.get_client()
         query = self.ds.query(kind='sessions')
@@ -119,25 +119,25 @@ class TestUnits(Model):
         ssm = sessions_model.Sessions()
         ssm.open_window()
         assert ssm.window_open == True
-        assert ssm.close_window() == False 
-        assert ssm.window_open == False 
-    
+        assert ssm.close_window() == False
+        assert ssm.window_open == False
+
     def test_close_window1(self, ds):
         entity = self.lower_partition_session_entity1()
         throwaway = ssm.open_window()
         assert ssm.window_open == True
         assert throwaway == True
-        assert ssm.close_window() == False 
-        assert ssm.window_open == False 
-    
+        assert ssm.close_window() == False
+        assert ssm.window_open == False
+
     def test_close_window2(self, ds):
         entity = lower_partition_session_entity2(self)
         ssm = sessions_model.Sessions()
         ssm.open_window()
         assert ssm.window_open == True
-        assert ssm.close_window() == False 
-        assert ssm.window_open == False 
-        
+        assert ssm.close_window() == False
+        assert ssm.window_open == False
+
     def test_close_window3(self, ds):
         ssm = sessions_model.Sessions()
         entity = lower_partition_session_entity1(self)
@@ -145,8 +145,8 @@ class TestUnits(Model):
         ssm.open_window()
         assert ssm.window_open == True
         assert throwaway == True
-        assert ssm.close_window() == False 
-        assert ssm.window_open == False 
+        assert ssm.close_window() == False
+        assert ssm.window_open == False
 
     def test_get_current_roster_size(self, ds)
         ssm = sessions_model.Sessions()
@@ -160,7 +160,7 @@ class TestUnits(Model):
             })
         self.ds.put(entity)
         assert ssm.get_current_roster_size() == 1
-        
+
     def test_get_secret_code(self):
         ssm = sessions_model.Sessions()
         assert ssm.secret == 0
