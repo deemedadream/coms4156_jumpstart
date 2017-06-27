@@ -15,7 +15,7 @@ class Students(Model):
         query = self.ds.query(kind='student')
         query.add_filter('sid', '=', self.sid)
         result = list(query.fetch())
-        return result[0]['uni']
+        return result[0]['uni'] if result else None
 
     def get_courses(self):
         query = self.ds.query(kind='enrolled_in')
@@ -148,6 +148,6 @@ class Students(Model):
         results = self.get_course_attendance(cid)
         num_ar = 0
         for r in results.values():
-            if r['signed_in'] == "Signed in:
+            if r['signed_in'] == "Signed in":
                 num_ar += 1
         return num_ar

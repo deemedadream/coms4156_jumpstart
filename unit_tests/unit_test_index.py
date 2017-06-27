@@ -1,50 +1,50 @@
 import logging
 import sys
-import pytest
 import flask
+import unittest
+import os
 
-from models.model import Model
-from models import index_model
-from models import students_model
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+
+from unit_test_base import BaseTestCase
+from models import model as m, \
+                   students_model as sm, \
+                   teachers_model as tm, \
+                   index_model as im
+
 from google.cloud import datastore
+from datetime import date
+from random import randint
 
-TEST_STUDENT = dict(sid=1, uni='tst9999')
-TEST_TEACHER = dict(tid=2)
+STUDENT = dict(sid=1, uni='tst9999')
+TEACHER = dict(tid=2)
 
-class TestIndex(Model):
 
-    '''Store mock data'''
+class IndexTestCase(BaseTestCase):
 
-    @pytest.fixture(scope='module')
-    def student_and_teacher(self):
-        ds = self.get_client()
-        key_s = ds.key('student')
-        entity = datastore.Entity(
-            key=key_s
-        )
-        entity.update(TEST_STUDENT)
-        ds.put(entity)
-
-        key_t = ds.key('teacher')
-        entity_t = datastore.Entity(
-            key=key_t
-        )
-        ds.put(entity_t)
+    def setUp(self):
+        super(IndexTestCase, self).setUp()
+        self.store_model('student', **STUDENT)
+        self.store_model('teacher', **TEACHER)        
 
     '''Tests'''
 
-    def test_is_student(self, student_and_teacher):
-        user = index_model.Index(uid=TEST_STUDENT['sid'])
-        assert user.is_student()
+    def test_is_student(self):
+        user = im.Index(uid=STUDENT['sid'])
+        self.assertTrue(user.is_student())
 
-    def test_is_student_but_not_student(self, student_and_teacher):
-        user = index_model.model.Index(uid=TEST_TEACHER['tid'])
-        assert not user.is_student()
+    def test_is_student_but_not_student(self):
+        user = im.Index(uid=TEACHER['tid'])
+        self.assertFalse(user.is_student())
 
-    def test_is_teacher(self, student_and_teacher):
-        user = index_model.Index(uid=TEST_TEACHER['sid'])
-        assert user.is_teacher()
+    def test_is_teacher(self):
+        user = im.Index(uid=TEACHER['tid'])
+        self.assertTrue(user.is_teacher())
 
-    def test_is_teacher_but_not_teacher(self, student_and_teacher):
-        user = index_model.model.Index(uid=TEST_STUDENT['tid'])
-        assert not user.is_teacher()
+    def test_is_teacher_but_not_teacher(self):
+        user = im.Index(uid=STUDENT['sid'])
+        self.assertFalse(user.is_teacher())
+
+
+if __name__ == '__main__':
+    unittest.main()

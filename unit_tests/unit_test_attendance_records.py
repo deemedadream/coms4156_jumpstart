@@ -1,147 +1,146 @@
 import logging
 import sys
-import pytest
 import flask
+import unittest
+import os
 
-import models.attendance_records_model as arm
-import models.students_model
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
-from models.model import Model
+from unit_test_base import BaseTestCase
+from models import model as m, \
+                   students_model as sm, \
+                   courses_model as cm, \
+                   teachers_model as tm, \
+                   sessions_model as ssm, \
+                   attendance_records_model as arm
+
 from google.cloud import datastore
+from datetime import date
+from random import randint
 
-TEST_STUDENT = dict(sid=1, uni='tst9999')
-TEST_COURSES = [dict(tid=t, cid=c) for t,c in [(1, 1), (2, 2)]]
-TEST_ENROLLMENTS = [dict(sid=TEST_STUDENT['sid'], cid=c['cid'])
-                    for c in TEST_COURSES]
-TEST_SESSIONS = [dict(cid=c['cid'], seid=i)
-                 for i, c in enumerate(TEST_COURSES)]
-TEST_RECORD = dict(sid=TEST_STUDENT['sid'],
-                   seid=TEST_SESSIONS[0]['seid'])
-TEST_EXCUSE = dict(sid=TEST_RECORD['sid'],
-                   seid=TEST_RECORD['seid'],
-                   excuse='Excuse me.')
+STUDENT = dict(sid=1,
+               uni='tst9999')
 
-class TestAttendanceRecord(Model):
+COURSES = [dict(tid=1, cid=1, name='c1'),
+           dict(tid=2, cid=2, name='c2')]
 
-    @pytest.fixture(scope='module')
-    def student_with_courses(self):
-        ds = self.get_client()
-        # add student
-        key_s = ds.key('student')
-        entity_s = datastore.Entity(
-            key=key_s
-        )
-        entity_s.update(TEST_STUDENT)
-        ds.put(entity_s)
-        student = models.students_model.Students(
-            TEST_STUDENT['sid']
-        )
+ENROLLS = [dict(sid=STUDENT['sid'],
+                cid=c['cid']) for c in COURSES]
 
-        # add courses
-        key_c = ds.key('courses')
-        entity_c = datastore.Entity(
-            key=key_c
-        )
-        for course in TEST_COURSES:
-            entity_c.update(course)
-        ds.put(entity_c)
+SESSIONS = [dict(seid=i,
+                 cid=c['cid'],
+                 date=str(date.today()),
+                 window_open=False,
+                 secret=randint(1000, 9999)) for i, c in enumerate(COURSES)]
 
-        # add enrollments
-        key_e = ds.key('enrollments')
-        entity_e = datastore.Entity(
-            key=key_e
-        )
-        for course in TEST_COURSES:
-            entity_e.update(course)
-        ds.put(entity_e)
+RECORD = dict(sid=STUDENT['sid'],
+               seid=SESSIONS[0]['seid'])
 
-        # add sessions
-        key_se = ds.key('sessions')
-        entity_se = datastore.Entity(
-            key=key_se
-        )
-        for session in TEST_SESSIONS:
-            entity_se.update(session)
-        ds.put(entity_se)
+EXCUSE = dict(sid=STUDENT['sid'],
+              seid=SESSIONS[1]['seid'],
+              excuse='Excuse me.')
 
-        yield student
+"""Utility function"""
 
-    '''Tests'''
+"""Testing context for unit tests"""
 
-    def test_insert_attendance_record(self, student_with_courses):
-        session = TEST_SESSIONS[0]
-        record = arm.Attendance_Records(
-            TEST_STUDENT['sid'],
-            session['seid']
-        )
-        record.insert_attendance_record()
-        stored_record = arm.Attendance_Records.get_record(
-            TEST_STUDENT['sid'],
-            session['seid']
-        )
-        assert stored_record.sid == TEST_STUDENT['sid']
-        assert stored_record.seid == session['seid']
+class AttendanceTestCase(BaseTestCase):
+
+    def setUp(self):
+        super(AttendanceTestCase, self).setUp()
+
+        self.context = {}
+        self.context['student'] = [self.store_model('student', **STUDENT)]
+        self.context['courses'] = [self.store_model('courses', **course)
+                   for course in COURSES]
+        self.context['enrolled_in'] = [self.store_model('enrolled_in', **e)
+                   for e in ENROLLS]
+        self.context['sessions'] = [self.store_model('sessions', **s)
+                    for s in SESSIONS]
+        self.student = sm.Students(STUDENT['sid']),
+        self.courses = [cm.Courses(c['cid']) for c in COURSES],
+        self.record = arm.Attendance_Records(sid=RECORD['sid'], seid=RECORD['seid'])
+
+    def test_insert_attendance_record(self):
+        #check record already existis
+        check = self.get_model('attendance_records',
+                               sid=self.record.sid,
+                               seid=self.record.seid)
+        self.store_context('attendance_records', **RECORD)
+        self.assertFalse(check)
+        self.record.insert_attendance_record()
+        result = self.get_model('attendance_records', 
+                                sid=self.record.sid,
+                                seid=self.record.seid)
+        self.assertTrue(result)
+        self.assertEquals(result['sid'], self.record.sid)
+        self.assertEquals(result['seid'], self.record.seid)
 
     def test_insert_attendance_record_without_enrollment(self):
-        session = TEST_SESSIONS[0]
-        record = arm.Attendance_Records(
-            TEST_STUDENT['sid'],
-            session['seid']
-        )
-        record.insert_attendance_record()
-        results = arm.Attendance_Records.get_record(
-            TEST_STUDENT['sid'],
-            session['seid']
-        )
-        assert len(results) == 0
+        record = dict(sid=STUDENT['sid'], seid=SESSIONS[1]['seid'])
+        self.store_context('attendance_records', **record)
+        check = self.get_model('attendance_records', **record)
+        self.assertFalse(check)
 
-    def test_remove_attendance_record(self, student_with_courses):
-        ds = self.get_client()
-        key = ds.key('attendance_record')
-        entity = datastore.Entity(key=key)
-        entity.update(TEST_RECORD)
-        ds.put(entity)
+        record_model = arm.Attendance_Records(**record)
+        record_model.insert_attendance_record()
+        result = self.get_model('attendance_records', **record)
+        self.assertFalse(result)
 
-        ar = arm.Attendance_Records(**TEST_RECORD)
-        ar.remove_attendance_record()
+    def test_remove_attendance_record(self):
+        record = RECORD
+        self.store_model('attendance_records', **record)
+        check = self.get_model('attendance_records', **record)
+        self.assertTrue(check)
+        
+        record_model = arm.Attendance_Records(**record)
+        record_model.remove_attendance_record()
+        result = self.get_model('attendance_records', **record)
 
-        results = arm.Attendance_Records.get_record(
-            **TEST_RECORD
-        )
-        assert len(results) == 0
+        self.assertFalse(result)
 
-    def test_provide_excuse(self, student_with_courses):
-        ar = arm.Attendance_Records(**TEST_RECORD)
-        ar.provide_excuse(excuse=TEST_EXCUSE['excuse'])
+    def test_provide_excuse(self):
+        self.store_context('excuses', **EXCUSE)
+        #check if attendance and excuses exist
+        check_attendance = self.get_model('attendance_records',
+                                          sid=EXCUSE['sid'],
+                                          seid=EXCUSE['seid'])
+        check_excuse = self.get_model('excuses', **EXCUSE)
+        self.assertFalse(check_attendance)
+        self.assertFalse(check_excuse)
 
-        result = ar.get_excuse()
-        assert len(result) == 1
-        assert result[0].sid == TEST_RECORD['sid']
-        assert result[0].seid == TEST_RECORD['seid']
-        assert result[0].excuse == TEST_EXCUSE['excuse']
+        ar = arm.Attendance_Records(sid=EXCUSE['sid'],
+                                    seid=EXCUSE['seid'])
+        ar.provide_excuse(EXCUSE['excuse'])
+        excuse = self.get_model('excuses', **EXCUSE)
 
-    def test_provide_excuse_without_absence(self, student_with_courses):
-        ds = self.get_client()
-        key = ds.key('attendance_record')
-        entity = datastore.Entity(key=key)
-        entity.update(TEST_RECORD)
-        ds.put(entity)
+        self.assertTrue(excuse)
+        for field in EXCUSE:
+            self.assertEquals(excuse[field], EXCUSE[field])
 
-        ar = arm.Attendance_Records(**TEST_RECORD)
-        ar.provide_excuse(TEST_EXCUSE['excuse'])
+    def test_provide_excuse_without_absence(self):
+        record = dict(sid=EXCUSE['sid'], seid=EXCUSE['seid'])
+        self.store_model('attendance_records', **record)
+        check_attendance = self.get_model('attendance_records', **record)
+        self.assertTrue(check_attendance)
 
-        result = ar.get_excuse()
-        assert len(result) == 0
+        self.store_context('excuses', **EXCUSE)
+        ar = arm.Attendance_Records(**record)
+        ar.provide_excuse(EXCUSE['excuse'])
+        excuse = self.get_model('excuses', **EXCUSE)
 
-    def test_remove_excuse(self, student_with_courses):
-        ds = self.get_client()
-        key = ds.key('excuses')
-        entity = datastore.Entity(key=key)
-        entity.update(TEST_EXCUSE)
-        ds.put(entity)
+        self.assertFalse(excuse)
 
-        ar = arm.Attendance_Records(**TEST_RECORD)
-        ar.remove_excuse()
+    def test_remove_excuse(self):
+        self.store_model('excuses', **EXCUSE)
+        check = self.get_model('excuses', **EXCUSE)
+        self.assertTrue(check)
 
-        result = ar.get_excuse()
-        assert len(result) == 0
+        record_model = arm.Attendance_Records(sid=EXCUSE['sid'],
+                                              seid=EXCUSE['seid'])
+        record_model.remove_excuse()
+        excuse = self.get_model('excuses', **EXCUSE)
+        self.assertFalse(excuse)
+
+if __name__ == '__main__':
+    unittest.main()
