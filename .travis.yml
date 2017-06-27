@@ -13,7 +13,6 @@ install:
 before_script: 
 export PYTHONPATH=$PYTHONPATH:$(pwd)/lib
 script:
-- py.test -v test_model.py
 deploy:
   provider: gae
   skip_cleanup: true
