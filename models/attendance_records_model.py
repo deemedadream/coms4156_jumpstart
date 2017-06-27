@@ -36,7 +36,7 @@ class Attendance_Records(Model):
         query.add_filter("sid", "=", self.sid)
         query.add_filter("seid", "=", self.seid)
         result = list(query.fetch())
-        self.ds.delete_multi(result)
+        self.ds.delete_multi([r.key for r in result])
 
     def get_excuse(self):
         query = self.ds.query(kind="excuses")
@@ -62,7 +62,7 @@ class Attendance_Records(Model):
         query.add_filter("sid", "=", self.sid)
         query.add_filter("seid", "=", self.seid)
         result = list(query.fetch())
-        self.ds.delete_multi(result)
+        self.ds.delete_multi([r.key for r in result])
 
     def get_excuses_multi(self, **kwargs):
         query = self.ds.query(kind="excuses")

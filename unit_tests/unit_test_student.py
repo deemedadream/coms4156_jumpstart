@@ -1,87 +1,91 @@
 import logging
 import sys
-import pytest
-import flask
+import unittest
+import os
 
-from models.model import Model
-from models import students_model
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+
+from unit_test_base import BaseTestCase
+from models import students_model as sm
+
+from datetime import date, timedelta
+from random import randint
 from google.cloud import datastore
 
-TEST_STUDENT = dict(sid=1, uni='tst9999')
-TEST_COURSES = [dict(tid=t, cid=c) for t,c in [(1, 1), (2, 2)]]
-TEST_ENROLLMENT = [dict(sid=TEST_STUDENT['sid'], cid=c['cid'])
-                   for c in TEST_COURSES]
+STUDENT = dict(sid=1, uni='tst9999')
 
-class TestStudent(Model):
+COURSES = [dict(tid=t, cid=c) for t,c in [(1, 1), (2, 2)]]
 
-    '''Storing mock data'''
+ENROLLMENT = [dict(sid=STUDENT['sid'], cid=c['cid'])
+                   for c in COURSES]
 
-    @pytest.fixture(scope='module')
-    def student(self):
-        ds = self.get_client()
-        key = ds.key('student')
-        entity = datastore.Entity(
-            key=key
-        )
-        entity.update(TEST_STUDENT)
-        ds.put(entity)
-        student = students_model.Students(
-            TEST_STUDENT['sid']
-        )
-        return student
+SESSIONS = [dict(seid=i,
+                 cid=COURSES[0]['cid'],
+                 date=str(date.today() - timedelta(days=i)),
+                 window_open=False,
+                 secret=randint(1000, 9999)) for i in range(5)]
 
-    @pytest.fixture(scope='module')
-    def student_with_courses(self):
-        ds = self.get_client()
-        #add student
-        key_s = ds.key('student')
-        entity_s = datastore.Entity(
-            key=key_s
-        )
-        entity_s.update(TEST_STUDENT)
-        ds.put(entity_s)
-        student = students_model.Students(
-            TEST_STUDENT['sid']
-        )
+RECORDS = [dict(seid=s['seid'],
+                sid=STUDENT['sid']) for s in SESSIONS]
 
-        #add courses
-        key_c = ds.key('courses')
-        entity_c = datastore.Entity(
-            key=key_c
-        )
-        for course in TEST_COURSES:
-            entity_c.update(course)
-        ds.put(entity_c)
+class StudentTestCase(BaseTestCase):
 
-        #add enrollments
-        key_e = ds.key('enrollments')
-        entity_e = datastore.Entity(
-            key=key_e
-        )
-        for course in TEST_COURSES:
-            entity_e.update(course)
-        ds.put(entity_e)
+    def setUp(self):
+        super(StudentTestCase, self).setUp()
+        self.store_model('student', **STUDENT)
+        for course in COURSES:
+            self.store_model('courses', **course)
 
-        return student
-
-    '''Tests'''
-
-    def test_get_uni_existing_student(self, student):
+    def test_get_uni_existing_student(self):
+        student = sm.Students(sid=STUDENT['sid'])
         uni = student.get_uni()
-        assert uni == TEST_STUDENT['uni']
+        self.assertEquals(uni, STUDENT['uni'])
 
     def test_get_uni_nonexistant_student(self):
         invalid_id = 9999
-        student = students_model.Students(invalid_id)
+        student = sm.Students(sid=invalid_id)
         uni = student.get_uni()
-        assert uni is None
+        self.assertFalse(uni)
 
-    def test_get_courses(self, student_with_courses):
-        student = student_with_courses
-        courses = student.get_courses()
-        assert len(courses) == len(TEST_ENROLLMENT)
+    def test_get_courses(self):
+        student = sm.Students(sid=STUDENT['sid'])
+        for enrolled in ENROLLMENT:
+            self.store_model('enrolled_in', **enrolled)
 
-    def test_get_courses_no_courses(self, student):
+        student_courses = sorted(student.get_courses(), 
+                                 key=lambda c: c['cid'])
+        correct_courses = sorted(COURSES, 
+                                 key=lambda x: x['cid'])
+        self.assertEquals(len(student_courses), len(correct_courses))
+        '''
+        for c1, c2 in zip(student_courses, correct_courses):
+            for c_field in c1:
+                self.assertEquals(c1[c_field], c2[c_field])
+        '''
+
+    def test_get_courses_no_courses(self):
+        student = sm.Students(sid=STUDENT['sid'])
         courses = student.get_courses()
-        assert len(courses) == 0
+
+        self.assertEquals(len(courses), 0)
+
+    def test_get_course_attendance(self):
+        for session in SESSIONS:
+            self.store_model('sessions', **session)
+
+        for record in RECORDS:
+            self.store_model('attendance_records', **record)
+
+        student = sm.Students(sid=STUDENT['sid'])
+        attendance = sorted(student.get_course_attendance(COURSES[0]['cid']), 
+                            key=lambda x: x['seid'])
+        correct_att = sorted(SESSIONS, key=lambda x: x['seid'])
+
+        self.assertEquals(len(attendance), len(correct_att))
+        for s1, s2 in zip(attendance, correct_att):
+            for attr in s1:
+                self.assertEquals(s1[attr], s2[attr])
+
+if __name__ == '__main__':
+    unittest.main()
 
