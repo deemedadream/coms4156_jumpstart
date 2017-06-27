@@ -43,6 +43,12 @@ class Students(Model):
         final = copy.deepcopy(enrolledCourses)
 
         #If there are courses, check whether there are active sessions and student is signed in
+        #right now, only checks if first session in the past sessions is open; what if that is not
+        #the latest session? Also if there are multiple sessions, sets course[signed_in] to the
+        #signed_in status of the attendance of the student on the last session in the result.
+        #What we want is to set window_open and signed_in to the values of the latest session and 
+        #attendance record for that session. Also we may want to write a restriction where only one session
+        #can be open at a time for a course.
         if courses:
             for course in courses:
                 query = self.ds.query(kind='sessions')

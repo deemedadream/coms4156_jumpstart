@@ -19,14 +19,20 @@ class Sessions(Model):
         if new_cid is None:
             new_cid = self.cid
         #find or create session
+        today = str(date.today())
         query = self.ds.query(kind='sessions')
         #query.add_filter('date', '=', self.date)
+        #check if there is a session open for today for this course
         query.add_filter('cid', '=', int(new_cid))
+        query.add_filter('date', '=', today)
         #query.add_filter('secret', '>', -1)
         result = list(query.fetch())
         if not result:
+            #if there isn't, upsert a blank dated session
+            #upsert because we don't want the database flooded with
+            #blank sessions
             self.cid = new_cid
-            key = self.ds.key('sessions')
+            key = self.ds.key('sessions', date=self.date)
             entity = datastore.Entity(
                 key=key)
             entity.update({
@@ -42,8 +48,13 @@ class Sessions(Model):
                 'seid' : int(self.seid)
             })
             self.ds.put(entity)
-            return self.seid
-
+        else:
+            self.seid = result[0]['seid']
+            self.cid = result[0]['cid']
+            self.date = result[0]['date']
+            self.window_open = result[0]['window_open']
+            self.secret = result[0]['secret']
+        '''
         elif result[0]['seid'] > -1 and result[0]['cid'] > -1 and result[0]['date'] == 'blank':
             key = self.ds.key('sessions', result[0]['seid'])
             entity = datastore.Entity(
@@ -58,14 +69,8 @@ class Sessions(Model):
             self.ds.put(entity)
             return result[0]['seid']
             #result[0]['date']=str(date.today())
-
-        else:
-            self.seid = result[0]['seid']
-            self.cid = result[0]['cid']
-            self.date = result[0]['date']
-            self.window_open = result[0]['window_open']
-            self.secret = result[0]['secret']
-            return result[0]['seid']
+        '''
+        return self.seid
 
     def open_window(self, seid):
         '''Opens a session for this course

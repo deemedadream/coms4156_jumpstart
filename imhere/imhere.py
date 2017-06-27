@@ -258,8 +258,8 @@ def add_class():
         cid = tm.add_course(course_name)
         cm = courses_model.Courses(cid)
         #create first session
-        ssm = sessions_model.Sessions()
-        ssm.open_session(cid)
+        #ssm = sessions_model.Sessions()
+        #ssm.open_session(cid)
 
         for uni in request.form['unis'].split('\n'):
             uni = uni.strip('\r')
