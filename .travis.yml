@@ -10,8 +10,6 @@ before_install:
 - mkdir -p lib
 install:
 - pip install -r requirements.txt -t lib/
-before_script: 
-export PYTHONPATH=$PYTHONPATH:$(pwd)/lib
 script:
 deploy:
   provider: gae
