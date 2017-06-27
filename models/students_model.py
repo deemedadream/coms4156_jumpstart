@@ -110,7 +110,7 @@ class Students(Model):
         entity.update({
             'seid': int(seid),
             'sid': self.sid,
-            'signed_in': True
+            'signed_in': False
         })
         self.ds.put(entity)
         '''query = self.ds.query(kind='attendance_records')
@@ -120,6 +120,21 @@ class Students(Model):
             'seid': int(seid),
         })
         self.ds.put(result)'''
+
+    def sign_in(self, sid=None, seid=None):
+        if sid is None:
+            sid = self.sid
+        if seid is None:
+            seid = self.seid
+        query = self.ds.query(kind="attendance_records")
+        query.add_filter("sid", "=", sid)
+        query.add_filter("seid", "=", seid)
+        result = list(query.fetch())
+        entity = result[0]
+        entity.update({
+        'signed_in' : True
+        })
+        self.ds.put(entity)
 
 
     def get_course_attendance(self, cid):
@@ -132,11 +147,11 @@ class Students(Model):
             query.add_filter('seid', '=', session['seid'])
             #query.add_filter('sid', '=', self.sid)
             results = list(query.fetch())
-            logging.warning("Printing students line 110 ===========================================================================================")
-            logging.warning(cid)
-            logging.warning(self.sid)
-            logging.warning(session['seid'])
-            logging.warning(len(results))
+            #logging.warning("Printing students line 110 ===========================================================================================")
+            #logging.warning(cid)
+            #logging.warning(self.sid)
+            #logging.warning(session['seid'])
+            #logging.warning(len(results))
             if results:
                 session['signed_in'] = "Signed in"
                 #session['message'] = results[0]['message']

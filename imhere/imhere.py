@@ -111,7 +111,7 @@ def main_student():
     logging.warning("courses")
     context = dict(data=courses)
     signed_in = True if sm.has_signed_in() else False
-    
+
 
     if request.method == 'GET':
         return render_template(
@@ -128,9 +128,10 @@ def main_student():
             actual_secret, seid = sm.get_secret_and_seid(cid)
             logging.warning("Printing students line 126 ===========================================================================================")
             logging.warning(sm.get_secret_and_seid(cid))
-            
+
             if int(provided_secret) == int(actual_secret):
-                sm.insert_attendance_record(seid)
+                #sm.insert_attendance_record(seid)
+                sm.sign_in(seid=seid)
                 valid = True
             else:
                 valid = False
@@ -188,6 +189,14 @@ def main_teacher():
             cid = int(request.form["open"])
             new_seid = ssm.open_session(cid)
             ssm.open_window(new_seid)
+            course = courses_model.Courses()
+            students = course.get_students_sids(cid)
+            logging.warning('opening window ===========================================')
+            logging.warning(students)
+            logging.warning('done getting students')
+            for student in students:
+                sm = students_model.Students(student['sid'])
+                sm.insert_attendance_record(new_seid)
     courses = tm.get_courses_with_session()
     empty = True if len(courses) == 0 else False
     context = dict(data=courses)
@@ -248,6 +257,7 @@ def remove_class():
 @app.route('/teacher/view_class', methods=['POST', 'GET'])
 def view_class():
     if request.method == 'GET':
+        logging.warning('should not happen')
         flask.redirect(flask.url_for('main_teacher'))
 
     elif request.method == 'POST':
@@ -286,6 +296,24 @@ def view_class():
         course_name = cm.course_name
         secret = ssm.get_secret_code()
         num_sessions = cm.get_num_sessions()
+        sess = cm.get_sessions()
+        logging.warning('class sessions: line 290===========================================')
+        logging.warning(sess)
+        logging.warning(num_sessions)
+        ssm2 = sessions_model.Sessions()
+        labels = []
+        values = []
+        for ses in sess:
+            logging.warning(ses)
+            logging.warning(ses['seid'])
+            denom = float(ssm2.get_current_roster_size(ses['seid']))
+            numerator = float(ssm2.get_attendance_count(ses['seid']))
+            logging.warning(denom)
+            logging.warning(numerator)
+            values.append((float(numerator/denom))*100)
+            labels.append(str(ses['date']))
+        logging.warning(values)
+        logging.warning(labels)
         students = cm.get_students()
         students_with_ar = []
         for student in students:
@@ -295,8 +323,8 @@ def view_class():
             students_with_ar.append([student, student_uni, num_ar])
 
         context = dict(students=students_with_ar)
-        labels = ["9/17", "9/20", "9/22", "9/25", "9/27", "9/29", "10/1", "10/3", "10/5", "10/7"]
-        values = [83, 21, 34, 45, 15, 63, 87, 28, 49, 100]
+        #labels = ["9/17", "9/20", "9/22", "9/25", "9/27", "9/29", "10/1", "10/3", "10/5", "10/7"]
+        #values = [83, 21, 34, 45, 15, 63, 87, 28, 49, 100]
         return render_template(
                 'view_class.html',
                 cid=cid,
