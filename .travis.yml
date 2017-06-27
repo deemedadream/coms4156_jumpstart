@@ -11,8 +11,7 @@ before_install:
 install:
 - pip install -r requirements.txt -t lib/
 before_script: 
--export PYTHONPATH=$PYTHONPATH:$(pwd)/env/bin:/home/Tahir/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
--printenv
+export PYTHONPATH=$PYTHONPATH:$(pwd)/lib
 script:
 - py.test -v test_model.py
 deploy:
