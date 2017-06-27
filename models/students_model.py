@@ -18,6 +18,12 @@ class Students(Model):
         return result[0]['uni'] if result else None
 
     def get_courses(self):
+        """Returns courses the student is enrolled in
+        along with whether there is a session window open
+        for each course and whether the student is already
+        signed in"""
+
+        #Check student's enrollments
         query = self.ds.query(kind='enrolled_in')
         query.add_filter('sid', '=', self.sid)
         enrolledCourses = list(query.fetch())
@@ -26,6 +32,8 @@ class Students(Model):
         attendance_records = list()
         sessions = list()
         courses = list()
+
+        #Retrieve courses student is enrolled in
         for enrolledCourse in enrolledCourses:
             query = self.ds.query(kind='courses')
             query.add_filter('cid', '=', enrolledCourse['cid'])
@@ -33,6 +41,8 @@ class Students(Model):
             logging.warning("Printing students line 33 ===========================================================================================")
             logging.warning(courses)
         final = copy.deepcopy(enrolledCourses)
+
+        #If there are courses, check whether there are active sessions and student is signed in
         if courses:
             for course in courses:
                 query = self.ds.query(kind='sessions')

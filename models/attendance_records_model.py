@@ -29,8 +29,6 @@ class Attendance_Records(Model):
         })
         self.ds.put(entity)
 
-
-
     def remove_attendance_record(self):
         query = self.ds.query(kind="attendance_records")
         query.add_filter("sid", "=", self.sid)
