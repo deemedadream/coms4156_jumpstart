@@ -10,6 +10,7 @@ before_install:
 - mkdir -p lib
 install:
 - pip install -r requirements.txt -t lib/
+before_script: export PYTHONPATH=$PYTHONPATH:$(pwd)
 script:
 - py.test -v test_model.py
 deploy:
