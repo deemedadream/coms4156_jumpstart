@@ -44,10 +44,11 @@ class Attendance_Records(Model):
                                     signed_in=False)
         sessions = []
         for a in absences:
-            key = self.ds.key('sessions', seid=a['seid'])
-            session = self.ds.get(key)
+            query = self.ds.query(kind='sessions')
+            query.add_filter('seid', '=', a['seid'])
+            session = list(query.fetch())
             if session:
-                sessions.append(session)
+                sessions.append(session[0])
         return sessions
 
     def get_records(self, **kwargs):
@@ -66,7 +67,8 @@ class Attendance_Records(Model):
 
     def provide_excuse(self, excuse):
         #check if excuse already exists
-        if not self.get_excuse():
+        excuse = self.get_excuse()
+        if not excuse:
             key = self.ds.key("excuses")
             entity = datastore.Entity(key=key)
             entity.update({
@@ -75,6 +77,9 @@ class Attendance_Records(Model):
                 'excuse': excuse
             })
             self.ds.put(entity)
+        else:
+            logging.warning("Printing ARM.provide_excuse line 81========================")
+            logging.warning(excuse)
 
     def remove_excuse(self):
         query = self.ds.query(kind="excuses")
@@ -85,11 +90,16 @@ class Attendance_Records(Model):
 
     def get_excuses_multi(self, **kwargs):
         query = self.ds.query(kind="excuses")
+        logging.warning("Printing ARM.get_excuses_multi====================================")
         if "sid" in kwargs:
+            logging.warning("sid = {}".format(kwargs['sid']))
             query.add_filter("sid", "=", kwargs["sid"])
         if "seid" in kwargs:
+            logging.warning("seid = {}".format(kwargs['seid']))
             query.add_filter("seid", "=", kwargs["seid"])
         results = list(query.fetch())
+        logging.warning("Printing ARM.get_excuses_multi line 98===================================")
+        logging.warning(results)
         return results
 
     def get_session(self, seid):
