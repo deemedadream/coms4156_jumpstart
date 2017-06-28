@@ -52,6 +52,7 @@ class Students(Model):
             logging.warning(sessions)
             course['window_open'] = False
             course['signed_in'] = False
+            course['secret_valid'] = None
 
             #check for open sessions
             for session in sessions:
@@ -88,7 +89,7 @@ class Students(Model):
             # results = results + list(query.fetch())
         logging.warning("Printing students line 61 ===========================================================================================")
         logging.warning(results)
-        if len(results) == 1:
+        if len(results) == 1:       #Works because open_window() ensures that only one window is open at a time
             secret = results[0]['secret']
             seid = results[0]['seid']
         else:
