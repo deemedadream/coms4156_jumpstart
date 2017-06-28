@@ -163,7 +163,7 @@ class Students(Model):
     def get_num_attendance_records(self, cid):
         results = self.get_course_attendance(cid)
         num_ar = 0
-        for r in results.values():
+        for r in results:
             if r['signed_in'] == "Signed in":
                 num_ar += 1
         return num_ar
