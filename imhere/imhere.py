@@ -192,7 +192,7 @@ def student_view_excuses():
 def add_excuse(seid):
     if request.method == 'POST':
         sid = flask.session['id']
-        seid = int(request.form['seid'])
+        seid = request.form['seid']
         excuse = request.form['excuse']
         record = arm.Attendance_Records(sid=sid,
                                         seid=seid)
