@@ -27,8 +27,6 @@ class Students(Model):
         query = self.ds.query(kind='enrolled_in')
         query.add_filter('sid', '=', self.sid)
         enrolledCourses = list(query.fetch())
-        logging.warning("Printing students line 24 ===========================================================================================")
-        logging.warning(enrolledCourses)
         attendance_records = list()
         sessions = list()
         courses = list()
@@ -38,8 +36,6 @@ class Students(Model):
             query = self.ds.query(kind='courses')
             query.add_filter('cid', '=', enrolledCourse['cid'])
             courses.extend(list(query.fetch()))
-            logging.warning("Printing students line 33 ===========================================================================================")
-            logging.warning(courses)
         final = copy.deepcopy(enrolledCourses)
 
         #If there are courses, check whether there are active sessions and student is signed in
@@ -49,31 +45,27 @@ class Students(Model):
         #What we want is to set window_open and signed_in to the values of the latest session and 
         #attendance record for that session. Also we may want to write a restriction where only one session
         #can be open at a time for a course.
-        if courses:
-            for course in courses:
-                query = self.ds.query(kind='sessions')
-                query.add_filter('cid', '=', course['cid'])
-                sessions = list(query.fetch())
-                logging.warning(sessions)
-                if sessions:
-                    course['window_open'] = sessions[0]['window_open']
-                    logging.warning("Printing students line 43 ===========================================================================================")
-                    logging.warning(courses)
-                    for session in sessions:
-                        query = self.ds.query(kind='attendance_records')
-                        query.add_filter('seid', '=', session['seid'])
-                        query.add_filter('sid', '=', self.sid)
-                        attendance_records = list(query.fetch())
-                        if attendance_records:
-                            course['signed_in'] = attendance_records[0]['signed_in']
-                            logging.warning("Printing students line 50 ===========================================================================================")
-                            logging.warning(courses)
-                        else:
-                            course['signed_in'] = False
-                else:
-                    course['window_open'] = False
-                    course['signed_in'] = False
-        logging.warning(final)
+        for course in courses:
+            query = self.ds.query(kind='sessions')
+            query.add_filter('cid', '=', course['cid'])
+            sessions = list(query.fetch())
+            logging.warning(sessions)
+            course['window_open'] = False
+            course['signed_in'] = False
+
+            #check for open sessions
+            for session in sessions:
+                if session['window_open']:
+                    course['window_open'] = True
+
+                    #check if the student signed in to this open session already
+                    query = self.ds.query(kind='attendance_records')
+                    query.add_filter('seid', '=', session['seid'])
+                    query.add_filter('sid', '=', self.sid)
+                    attendance_records = list(query.fetch())
+                    if attendance_records:
+                        course['signed_in'] = attendance_records[0]['signed_in']
+                    break
         return courses
 
     def get_secret_and_seid(self, cid = None):
@@ -169,10 +161,10 @@ class Students(Model):
             logging.warning(self.sid)
             #logging.warning(session['seid'])
             #logging.warning(len(results))
-            if results:
-                session['signed_in'] = "Signed in"
-            else:
-                session['signed_in'] = "Not signed in"
+            session['signed_in'] = "Not signed in"
+            for result in results:
+                if result['signed_in']:
+                    session['signed_in'] = "Signed in"
         return sessions
 
 
