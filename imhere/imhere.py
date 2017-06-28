@@ -110,7 +110,7 @@ def main_student():
     sm = students_model.Students(flask.session['id'])
     courses = sm.get_courses()
     logging.warning("Printing students line 50 ===========================================================================================")
-    logging.warning("courses")
+    logging.warning(courses)
     context = dict(data=courses)
     signed_in = True if sm.has_signed_in() else False
 
@@ -124,24 +124,29 @@ def main_student():
     elif request.method == 'POST':
         if 'secret_code' in request.form.keys():
             provided_secret = request.form['secret_code']
-            cid = request.form['cid']
+            cid = int(request.form['cid'])
             logging.warning("Printing students line 123 ===========================================================================================")
             logging.warning(cid)
             actual_secret, seid = sm.get_secret_and_seid(cid)
             logging.warning("Printing students line 126 ===========================================================================================")
-            logging.warning(sm.get_secret_and_seid(cid))
-
-            if int(provided_secret) == int(actual_secret):
-                #sm.insert_attendance_record(seid)
-                sm.sign_in(seid=seid)
-                valid = True
-            else:
-                valid = False
-
+            logging.warning(actual_secret, seid)
+            if courses:
+                for course in courses:
+                    logging.warning("Printing students line 135 ===========================================================================================")
+                    logging.warning(course)
+                    if course['cid'] == cid:
+                        if int(provided_secret) == int(actual_secret):
+                            sm.sign_in(seid=seid)
+                            course['secret_valid'] = True
+                            course['signed_in'] = True
+                        else:
+                            course['secret_valid'] = False
+            context = dict(data=courses)
+            logging.warning("Printing students line 142 ===========================================================================================")
+            logging.warning(courses)
             return render_template(
                     'main_student.html',
                     submitted=True,
-                    valid=valid,
                     **context)
 
 @app.route('/student/view_attendance', methods=['GET', 'POST'])

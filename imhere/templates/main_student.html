@@ -24,12 +24,6 @@
 
             <br><b><font size="7">{{n['name']}}</font></b><br>
 
-            {% if valid %}
-                Successful sign-in!
-            {% elif signed_in %}
-                You have already signed into the session!
-            {% else %}
-
             <form action="/student/" method="post">
                 Sign in now!
                 <input type="text" name="secret_code" placeholder="Secret Code">
@@ -37,14 +31,12 @@
                 <input type="submit" value="Submit">
             </form><br>
 
-                {% if submitted %}
-                    {% if not valid %}
-                    <font color="red">Invalid Secret Code</font>
-                    {% endif %}
+            {% if submitted %}
+                {% if n['secret_valid'] == False %}
+                <font color="red">Invalid Secret Code</font>
                 {% endif %}
-
             {% endif %}
-
+        
         {% endif %}
         <!-- Window open or closed. Student has signed in before. -->
         {% if n['signed_in'] == True %}
