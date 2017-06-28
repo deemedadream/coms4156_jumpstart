@@ -1,3 +1,5 @@
+import logging
+
 from model import Model
 from google.cloud import datastore
 
@@ -6,8 +8,8 @@ class Attendance_Records(Model):
     def __init__(self, sid=-1, seid=-1, signed_in=None, excuse_provided=False):
         if signed_in is None:
             signed_in = False
-        self.sid = int(sid)
-        self.seid = int(seid)
+        self.sid = sid
+        self.seid = seid
         self.signed_in = signed_in
         self.excuse_provided = excuse_provided
         self.ds = self.get_client()
@@ -29,8 +31,6 @@ class Attendance_Records(Model):
         })
         self.ds.put(entity)
 
-
-
     def remove_attendance_record(self):
         query = self.ds.query(kind="attendance_records")
         query.add_filter("sid", "=", self.sid)
@@ -40,6 +40,9 @@ class Attendance_Records(Model):
 
     def get_excuse(self):
         query = self.ds.query(kind="excuses")
+        logging.warning("Printing line 41=======================================")
+        logging.warning(self.sid)
+        logging.warning(self.seid)
         query.add_filter("sid", "=", self.sid)
         query.add_filter("seid", "=", self.seid)
         result = list(query.fetch())

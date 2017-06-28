@@ -18,6 +18,12 @@ class Students(Model):
         return result[0]['uni'] if result else None
 
     def get_courses(self):
+        """Returns courses the student is enrolled in
+        along with whether there is a session window open
+        for each course and whether the student is already
+        signed in"""
+
+        #Check student's enrollments
         query = self.ds.query(kind='enrolled_in')
         query.add_filter('sid', '=', self.sid)
         enrolledCourses = list(query.fetch())
@@ -26,6 +32,8 @@ class Students(Model):
         attendance_records = list()
         sessions = list()
         courses = list()
+
+        #Retrieve courses student is enrolled in
         for enrolledCourse in enrolledCourses:
             query = self.ds.query(kind='courses')
             query.add_filter('cid', '=', enrolledCourse['cid'])
@@ -33,6 +41,14 @@ class Students(Model):
             logging.warning("Printing students line 33 ===========================================================================================")
             logging.warning(courses)
         final = copy.deepcopy(enrolledCourses)
+
+        #If there are courses, check whether there are active sessions and student is signed in
+        #right now, only checks if first session in the past sessions is open; what if that is not
+        #the latest session? Also if there are multiple sessions, sets course[signed_in] to the
+        #signed_in status of the attendance of the student on the last session in the result.
+        #What we want is to set window_open and signed_in to the values of the latest session and 
+        #attendance record for that session. Also we may want to write a restriction where only one session
+        #can be open at a time for a course.
         if courses:
             for course in courses:
                 query = self.ds.query(kind='sessions')
@@ -145,10 +161,11 @@ class Students(Model):
         for session in sessions:
             query = self.ds.query(kind='attendance_records')
             query.add_filter('seid', '=', session['seid'])
+            query.add_filter('sid', '=', self.sid)
             results = list(query.fetch())
-            #logging.warning("Printing students line 110 ===========================================================================================")
+            logging.warning("Printing students line 110 ===========================================================================================")
             #logging.warning(cid)
-            #logging.warning(self.sid)
+            logging.warning(self.sid)
             #logging.warning(session['seid'])
             #logging.warning(len(results))
             if results:

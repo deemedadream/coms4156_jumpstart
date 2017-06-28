@@ -146,6 +146,8 @@ def main_student():
 
 @app.route('/student/view_attendance', methods=['GET', 'POST'])
 def student_view_attendance():
+    logging.warning("Printing line 149: student_view_attendance ============================================================")
+    logging.warning(flask.session['id'])
     sm = students_model.Students(flask.session['id'])
     ssm = sessions_model.Sessions()
 
@@ -258,8 +260,8 @@ def add_class():
         cid = tm.add_course(course_name)
         cm = courses_model.Courses(cid)
         #create first session
-        ssm = sessions_model.Sessions()
-        ssm.open_session(cid)
+        #ssm = sessions_model.Sessions()
+        #ssm.open_session(cid)
 
         for uni in request.form['unis'].split('\n'):
             uni = uni.strip('\r')
