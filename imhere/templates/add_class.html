@@ -79,9 +79,12 @@
 
     </center>
     <script>
+    // $(document).ready(function(){
+    //
+    // })
     $('#createform').submit(function()
     {
-
+        $(this).find(':submit').prop('disabled', true);
         regx = /[^a-z0-9\s\n]*/gi;
         regx2 = /[^a-z0-9\s]*/gi;
         string = $("input[name=classname]").val()
