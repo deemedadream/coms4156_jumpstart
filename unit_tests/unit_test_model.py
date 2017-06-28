@@ -1,10 +1,13 @@
-#import os
 #import imhere
 #import unittest
 #import tempfile
 #from flask import session
 import logging
 import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+
 from datetime import date, datetime
 from models.model import Model
 

@@ -48,7 +48,6 @@ class Sessions(Model):
                 'seid' : int(self.seid)
             })
             self.ds.put(entity)            
-            return self.seid
         else:
             logging.warning('sessions_model line 50 =========================================================')
             logging.warning(result[0])
