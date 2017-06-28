@@ -1,5 +1,8 @@
 {% extends 'base_student.html' %}
-
+{% block scripts %}
+<script type="text/javascript" src="{{url_for('static', filename='main_student.js')}}"></script>
+{{super()}}
+{% endblock %}
 {% block content %}
 
 {% if data %}
@@ -24,7 +27,7 @@
 
             <br><b><font size="7">{{n['name']}}</font></b><br>
 
-            <form action="/student/" method="post">
+            <form id="secretsignin" action="/student/" method="post">
                 Sign in now!
                 <input type="text" name="secret_code" placeholder="Secret Code">
                 <input type="hidden" value="{{n['cid']}}" name="cid">
@@ -36,12 +39,12 @@
                 <font color="red">Invalid Secret Code</font>
                 {% endif %}
             {% endif %}
-        
+
         {% endif %}
         <!-- Window open or closed. Student has signed in before. -->
         {% if n['signed_in'] == True %}
            <br><font size="6"> {{n['name']}}</font><br>
-            Successfully signed in to today's session   
+            Successfully signed in to today's session
         {% endif %}
         <!-- Window closed. Student has not signed in before. -->
         {% if n['window_open'] == False and n['signed_in'] == False %}

@@ -83,6 +83,9 @@
     {
 
         regx = /[^a-z0-9\s\n]*/gi;
+        regx2 = /[^a-z0-9\s]*/gi;
+        string = $("input[name=classname]").val()
+        $("input[name=classname]").val(string.replace(regx2, ''))
         $("#unis").val($("#unis").val().replace(regx, ''));
         return true;
 

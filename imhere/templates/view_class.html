@@ -30,7 +30,7 @@
 
     <th>
     Add Student to Class:<br>
-    <form method="POST" action="/teacher/view_class">
+    <form id="addunis" method="POST" action="/teacher/view_class">
         <textarea required id="unis" name="add_student" placeholder="uni"></textarea>
         <br>
         <input type="file" id="csvFileInput" onchange="handleFiles(this.files, true)" accept=".csv">
@@ -42,7 +42,7 @@
     {% if students %}
     <th>
     Del Student from Class:<br>
-    <form method="POST" action="/teacher/view_class">
+    <form id="removeunis" method="POST" action="/teacher/view_class">
         <textarea required id="rmunis" name="remove_student" placeholder="uni"></textarea>
         <br>
         <input type="file" id="csvFileInput" onchange="handleFiles(this.files, false)" accept=".csv">
@@ -96,7 +96,7 @@
 
     <a href="/teacher/">Home</a>
     <br>
-    <canvas id="graph" width="800" height="400" style='width:600px;height:300px;'></canvas>
+    <canvas id="graph" width="800" height="400" style='width:75%;height:300px;'></canvas>
     </center>
     <script>
         var add = false;
@@ -209,6 +209,23 @@
                     }]
                 }
             }
+
+        });
+
+        $('#addunis').submit(function()
+        {
+
+            regx = /[^a-z0-9\s\n]*/gi;
+            $("#unis").val($("#unis").val().replace(regx, ''));
+            return true;
+
+        });
+        $('#removeunis').submit(function()
+        {
+
+            regx = /[^a-z0-9\s\n]*/gi;
+            $("#rmunis").val($("#rmunis").val().replace(regx, ''));
+            return true;
 
         });
     </script>
