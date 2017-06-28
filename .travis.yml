@@ -11,6 +11,7 @@ before_install:
 install:
 - pip install -r requirements.txt
 script:
+- export GOOGLE_APPLICATION_CREDENTIALS=cred.json
 - py.test unit_tests/unit_test_courses.py
 - py.test unit_tests/unit_test_model.py
 - py.test unit_tests/unit_test_sessions.py
