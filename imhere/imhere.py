@@ -180,7 +180,7 @@ def student_view_attendance():
 #Need to fix ARM; figure out how to best refactor get functions as class methods
 @app.route('/student/view_excuses')
 def student_view_excuses():
-    sid = flask.session['id'] 
+    sid = flask.session['id']
     excuses = arm.Attendance_Records().get_excuses_multi(sid=sid)
 
     #get excuses indexed by their course name
@@ -360,9 +360,13 @@ def view_class():
             logging.warning(ses['seid'])
             denom = float(ssm2.get_current_roster_size(ses['seid']))
             numerator = float(ssm2.get_attendance_count(ses['seid']))
+            if(denom == 0):
+                values.append(0)
+            else:
+                values.append((float(numerator/denom))*100)
             logging.warning(denom)
             logging.warning(numerator)
-            values.append((float(numerator/denom))*100)
+
             labels.append(str(ses['date']))
         logging.warning(values)
         logging.warning(labels)
