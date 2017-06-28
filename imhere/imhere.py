@@ -150,7 +150,6 @@ def student_view_attendance():
     logging.warning(flask.session['id'])
     sm = students_model.Students(flask.session['id'])
     ssm = sessions_model.Sessions()
-
     courses = sm.get_courses()
 
     #need to error check for when student is not enrolled in any courses
@@ -249,6 +248,8 @@ def main_teacher():
                 sm = students_model.Students(student['sid'])
                 sm.insert_attendance_record(new_seid)
     courses = tm.get_courses_with_session()
+    logging.warning("Printing imhere line 231 ===========================================================================================")
+    logging.warning(courses)
     empty = True if len(courses) == 0 else False
     context = dict(data=courses)
     return render_template('main_teacher.html', empty=empty, **context)

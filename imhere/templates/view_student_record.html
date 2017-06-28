@@ -20,10 +20,10 @@
     <br>
     <table class="sortable">
     <tr>
-      <th>Date</th>
-  	<th>Session ID</th>
-      <th>Signed In</th>
-      <th>Message</th>
+        <th>Date</th>
+        <th>Session ID</th>
+        <th>Signed In</th>
+        <th>Message</th>
     </tr>
     	{% if records %}    
         {% for n in records %}
@@ -40,6 +40,11 @@
         {% endfor %}
       {% endif %}
     </table>
+	{% if not records %}
+	    <br>
+	    <br> 
+	    <div class="error_message"><b><i>This course has not had any sessions as yet.</i></b></div> 
+	{% endif %}
     <p>
     <div align="left">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
     <a class="active" href="/student/">Back to all courses</a>

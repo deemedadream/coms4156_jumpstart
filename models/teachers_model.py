@@ -38,6 +38,7 @@ class Teachers(Model):
             course['active'] = 0
             query = self.ds.query(kind='sessions')
             query.add_filter('cid', '=', course['cid'])
+            query.add_filter('date', '=', str(date.today()))
             sessions = list(query.fetch())
             for session in sessions:
                 if session['window_open'] == True:
