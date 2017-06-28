@@ -1,0 +1,40 @@
+{% extends 'base_teacher.html' %}
+
+{% block content %}
+
+    {% if courses_taught %}
+    <h2>View excuses for another course:</h2>
+    <form action="" method="POST">
+        <select name="cid">
+            {% for c in courses_taught %}
+            <option value="{{ c['cid'] }}">{{ c['name'] }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="View excuses">
+    </form>
+
+    <h2>Excuses for {{ course_name }}</h2>
+        
+        {% for s in data %}
+            <h3>Session Date: {{ s['date'] }}</h3>
+            <table>
+            <tr>
+                <th>UNI</th>
+                <th>Excuse</th>
+            </tr>
+            {% for e in s['excuses'] %}
+                <tr>
+                    <td>{{ e['uni'] }}</td>
+                    <td>{{ e['excuse'] }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% endfor %}
+    {% else %}
+    <h2>You currently don't teach any courses.</h2>
+    <a href="{{ url_for('add_class') }}">Add Course</a>
+    {% endif %}
+
+    <br>
+
+{% endblock %}
