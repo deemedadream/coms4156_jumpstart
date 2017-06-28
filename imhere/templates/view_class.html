@@ -23,22 +23,6 @@
 
     <h3>{{course_name}}</h3>
 
-    {% if secret != -1 %}
-        <form method="POST" action="/teacher/view_class">
-        <button name="close" value="{{cid}}">Close Attendance Window
-        </button>
-        </form>
-
-        Secret Code:<br>
-        {{secret}}<br>
-
-    {% else %}
-        <form method="POST" action="/teacher/view_class">
-        <button name="open" value="{{cid}}">Open Attendance Window
-        </button>
-        </form><br>
-
-    {% endif %}
 
     <table cellspacing="35">
     <thead>
@@ -211,6 +195,10 @@
                         scaleLabel: {
                             display: true,
                             labelString: '% Attendance'
+                        },
+                        ticks: {
+                            min: 0,
+                            max: 100,
                         }
                     }],
                     xAxes: [{

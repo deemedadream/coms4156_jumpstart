@@ -227,7 +227,12 @@ def add_excuse(seid):
 
 @app.route('/teacher/', methods=['GET', 'POST'])
 def main_teacher():
+
     tid = flask.session['id']
+    if request.method == 'GET':
+        index = index_model.Index(tid)
+        if(not index.is_teacher()):
+            return render_template('error.html')
     tm = teachers_model.Teachers(tid)
     ssm = sessions_model.Sessions()
     if request.method == 'POST':
@@ -345,31 +350,34 @@ def view_class():
             #uni = request.form['remove_student']
             #res = cm.remove_student(uni)
 
-        course_name = cm.course_name
+        course_name = cm.get_course_name()
+
+        logging.warning('course name is: line 350===========================================')
+        logging.warning(course_name)
         secret = ssm.get_secret_code()
         num_sessions = cm.get_num_sessions()
         sess = cm.get_sessions()
-        logging.warning('class sessions: line 290===========================================')
-        logging.warning(sess)
-        logging.warning(num_sessions)
+        # logging.warning('class sessions: line 290===========================================')
+        # logging.warning(sess)
+        # logging.warning(num_sessions)
         ssm2 = sessions_model.Sessions()
         labels = []
         values = []
         for ses in sess:
-            logging.warning(ses)
-            logging.warning(ses['seid'])
+            # logging.warning(ses)
+            # logging.warning(ses['seid'])
             denom = float(ssm2.get_current_roster_size(ses['seid']))
             numerator = float(ssm2.get_attendance_count(ses['seid']))
             if(denom == 0):
                 values.append(0)
             else:
                 values.append((float(numerator/denom))*100)
-            logging.warning(denom)
-            logging.warning(numerator)
+            # logging.warning(denom)
+            # logging.warning(numerator)
 
             labels.append(str(ses['date']))
-        logging.warning(values)
-        logging.warning(labels)
+        # logging.warning(values)
+        # logging.warning(labels)
         students = cm.get_students()
         students_with_ar = []
         for student in students:
