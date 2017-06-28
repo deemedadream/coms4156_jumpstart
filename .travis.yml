@@ -11,18 +11,7 @@ before_install:
 install:
 - pip install -r requirements.txt
 script:
-- export GOOGLE_APPLICATION_CREDENTIALS=cred.json
-- py.test unit_tests/unit_test_courses.py
-- py.test unit_tests/unit_test_model.py
-- py.test unit_tests/unit_test_sessions.py
-- py.test unit_tests/unit_test_teachers.py
-- py.test unit_tests/unit_test_users.py
-- python unit_tests/unit_test_attendance_records.py
-- python unit_tests/unit_test_index.py
-- python unit_tests/unit_test_student.py
-matrix:
-  allow_failures:
-  - python: 2.7
+  echo "No Script to run"
 deploy:
   provider: gae
   skip_cleanup: true
