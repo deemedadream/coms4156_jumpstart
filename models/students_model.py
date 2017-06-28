@@ -161,10 +161,11 @@ class Students(Model):
         for session in sessions:
             query = self.ds.query(kind='attendance_records')
             query.add_filter('seid', '=', session['seid'])
+            query.add_filter('sid', '=', self.sid)
             results = list(query.fetch())
-            #logging.warning("Printing students line 110 ===========================================================================================")
+            logging.warning("Printing students line 110 ===========================================================================================")
             #logging.warning(cid)
-            #logging.warning(self.sid)
+            logging.warning(self.sid)
             #logging.warning(session['seid'])
             #logging.warning(len(results))
             if results:

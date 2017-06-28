@@ -146,6 +146,8 @@ def main_student():
 
 @app.route('/student/view_attendance', methods=['GET', 'POST'])
 def student_view_attendance():
+    logging.warning("Printing line 149: student_view_attendance ============================================================")
+    logging.warning(flask.session['id'])
     sm = students_model.Students(flask.session['id'])
     ssm = sessions_model.Sessions()
 
