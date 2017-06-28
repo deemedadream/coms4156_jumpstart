@@ -37,14 +37,19 @@ class Teachers(Model):
         for course in courses:
             query = self.ds.query(kind='sessions')
             query.add_filter('cid', '=', course['cid'])
+            query.add_filter('date', '=', str(date.today()))
             sessions = list(query.fetch())
-            for session in sessions:
-                if session['window_open'] == True:
-                    course['active'] = 1
-                    course['secret'] = sessions[0]['secret']
-                else:
-                    course['active'] = 0
-                    course['secret'] = sessions[0]['secret']
+            if sessions:
+                for session in sessions:
+                    if session['window_open'] == True:
+                        course['active'] = 1
+                        course['secret'] = sessions[0]['secret']
+                    else:
+                        course['active'] = 0
+                        course['secret'] = sessions[0]['secret']
+            else:
+                course['active'] = 0
+                course['secret'] = -1
         return courses
 
 

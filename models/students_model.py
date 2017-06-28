@@ -56,6 +56,7 @@ class Students(Model):
                             course['signed_in'] = False
                 else:
                     course['window_open'] = False
+                    course['signed_in'] = False
         logging.warning(final)
         return courses
 
@@ -104,22 +105,22 @@ class Students(Model):
             return True if len(results) == 1 else False
 
     def insert_attendance_record(self, seid):
-        key = self.ds.key('attendance_records')
-        entity = datastore.Entity(
-            key=key)
-        entity.update({
-            'seid': int(seid),
-            'sid': self.sid,
-            'signed_in': False
-        })
-        self.ds.put(entity)
-        '''query = self.ds.query(kind='attendance_records')
+        logging.warning("Printing students line 112 ===========================================================================================")
+        logging.warning(seid)
+        query = self.ds.query(kind='attendance_records')
         query.add_filter('seid', '=', int(seid))
+        query.add_filter('sid', '=', self.sid)
         result = list(query.fetch())
-        result.update({
-            'seid': int(seid),
-        })
-        self.ds.put(result)'''
+        if not result:
+            key = self.ds.key('attendance_records')
+            entity = datastore.Entity(
+                key=key)
+            entity.update({
+                'seid': int(seid),
+                'sid': self.sid,
+                'signed_in': False
+            })
+            self.ds.put(entity)
 
     def sign_in(self, sid=None, seid=None):
         if sid is None:

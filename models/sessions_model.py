@@ -18,21 +18,24 @@ class Sessions(Model):
     def open_session(self, new_cid = None):
         if new_cid is None:
             new_cid = self.cid
-        #find or create session
-        query = self.ds.query(kind='sessions')
-        #query.add_filter('date', '=', self.date)
-        query.add_filter('cid', '=', int(new_cid))
-        #query.add_filter('secret', '>', -1)
-        result = list(query.fetch())
-        if not result:
+        else:
             self.cid = new_cid
+        #find or create session
+        today = str(date.today())
+        query = self.ds.query(kind='sessions')
+        query.add_filter('cid', '=', int(new_cid))
+        query.add_filter('date', '=', today)
+        result = list(query.fetch())
+        #If no sessions with today's date, create one. 
+        if not result:
+            self.date = today
             key = self.ds.key('sessions')
             entity = datastore.Entity(
                 key=key)
             entity.update({
                 'seid' : -1,
                 'cid' : int(new_cid),
-                'date' : self.date,
+                'date' : today,
                 'window_open' : False,
                 'secret' : -1
             })
@@ -41,10 +44,18 @@ class Sessions(Model):
             entity.update({
                 'seid' : int(self.seid)
             })
-            self.ds.put(entity)
+            self.ds.put(entity)            
             return self.seid
-
-        elif result[0]['seid'] > -1 and result[0]['cid'] > -1 and result[0]['date'] == 'blank':
+        else:
+            logging.warning('sessions_model line 50 =========================================================')
+            logging.warning(result[0])
+            self.seid = result[0]['seid']
+            self.cid = result[0]['cid']
+            self.date = result[0]['date']
+            self.window_open = result[0]['window_open']
+            self.secret = result[0]['secret']
+            return result[0]['seid']
+        '''elif result[0]['seid'] > -1 and result[0]['cid'] > -1 and result[0]['date'] == 'blank':
             key = self.ds.key('sessions', result[0]['seid'])
             entity = datastore.Entity(
                 key=key)
@@ -57,17 +68,11 @@ class Sessions(Model):
             })
             self.ds.put(entity)
             return result[0]['seid']
-            #result[0]['date']=str(date.today())
+            #result[0]['date']=str(date.today())'''
 
-        else:
-            self.seid = result[0]['seid']
-            self.cid = result[0]['cid']
-            self.date = result[0]['date']
-            self.window_open = result[0]['window_open']
-            self.secret = result[0]['secret']
-            return result[0]['seid']
+        
 
-    def open_window(self, seid):
+    def open_window(self, seid = None):
         '''Opens a session for this course
         and returns the secret code for that session.
         '''
@@ -78,9 +83,16 @@ class Sessions(Model):
         query.add_filter('seid', '=', seid)
         result = list(query.fetch())
         entity = result[0]
-        if result[0]['window_open'] == True:
-            return True
-        # auto-generated secret code for now
+        
+        #Close the windows of old sessions
+        query = self.ds.query(kind='sessions')
+        query.add_filter('cid', '=', entity['cid'])
+        old_sessions = list(query.fetch())
+        if old_sessions:
+            for session in old_sessions:
+                self.close_window(session['seid'])
+
+        # auto-generate secret code and open the windoww
         randsecret = randint(1000, 9999)
         self.secret = int(randsecret)
         entity.update({
@@ -89,12 +101,17 @@ class Sessions(Model):
             'date' : self.date
         })
         self.ds.put(entity)
+        logging.warning('sessions_model line 104 =========================================================')
+        logging.warning(entity)
+        #return confirmed window status from db
         query = self.ds.query(kind='sessions')
-        query.add_filter('date', '=', self.date)
+        query.add_filter('seid', '=', seid)
         result = list(query.fetch())
-        self.window_open = result[0]['window_open']
-        return result[0]['window_open']
-
+        if result:
+            self.window_open = result[0]['window_open']
+            return result[0]['window_open']
+        else:
+            return False
 
     def close_window(self, close_seid = None):
         if close_seid is None:
@@ -102,25 +119,30 @@ class Sessions(Model):
         query = self.ds.query(kind='sessions')    #find session
         query.add_filter('seid', '=', close_seid)
         result = list(query.fetch())
-        entity = result[0]
-        if (entity['window_open'] == True):
-            entity.update({
-            'window_open' : False,
-            'secret' : -1
-            })
-            self.ds.put(entity)
+        if result:
+            entity = result[0]
+            if (entity['window_open'] == True):
+                entity.update({
+                'window_open' : False,
+                'secret' : -1
+                })
+                self.ds.put(entity)
+            else:
+                 return False
+            #return confirmed window status from db
+            query = self.ds.query(kind='sessions')
+            query.add_filter('seid', '=', close_seid)
+            result = list(query.fetch())
+            if result:
+                self.window_open = result[0]['window_open']
+                self.secret = result[0]['secret']
+                return result[0]['window_open']
         else:
-             pass
-        query = self.ds.query(kind='sessions')
-        query.add_filter('seid', '=', self.seid)
-        result = list(query.fetch())
-        self.window_open = result[0]['window_open']
-        self.secret = result[0]['secret']
-        return result[0]['window_open']
-
+            return False
 
     def get_secret_code(self):
         self.open_session(self.cid)
+        self.open_window()
         if self.window_open:
             return self.secret
         else:
