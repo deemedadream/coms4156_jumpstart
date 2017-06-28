@@ -2,6 +2,9 @@ import logging
 import sys
 import pytest
 import flask
+import os
+
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 from datetime import date, datetime
 from models.model import Model
@@ -39,7 +42,7 @@ class TestUnits(Model):
         })
         return entity
         
-    def upper_bound_course_model(self)
+    def upper_bound_course_model(self):
         cm = courses_model.Courses()
         
     
