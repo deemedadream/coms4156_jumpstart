@@ -3,24 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - ImHere</title>
+    <style>
+    #title {
+        background-color: gray;
+        position: relative;
+        min-height:100px;
+    }
+    h1 {
+        width:100%;
+        color:white;
+        position: absolute;
+        bottom: 0;
+        left:10px;
+
+    }
+    input[type=submit] {
+        margin-top: 50px;
+        border: 0 none;
+        border-radius: 30px;
+        background-color: #33b5e5;
+        color: white;
+        height: 60px;
+        width: 140px;
+        font-size: 20px;
+    }
+
+    #reg {
+        height: 40px;
+        width: 140px;
+        border-radius: 30px;
+        background-color: #33b5e5;
+        padding-top: 20px;
+    }
+    a {
+        position: relative;
+        color: white;
+        font-weight: normal;
+        padding: 0 0 10px;
+        font-size: 20px;
+    }
+    </style>
 </head>
 
 <body>
-    <h1><center>ImHere</center></h1><br>
-
+    <div id="title">
+    <h1>ImHere</h1>
+    </div>
+    <!-- <div id="main"> -->
+    <!-- <div id="loginbox"> -->
     <form method="POST" action="/login">
         <center>
         <input type="submit" value="Login"><br><br>
         </center>
     </form>
-
+    <!-- </div> -->
     {% if not_registered %}
     <center>
     <font color="red">*register for an account before logging in*</font>
     </center>
     {% endif %}
 
-    <center><h4><a href="/register">Register</a></h4></center>
-
+    <center><h4><a href="/register" style="text-decoration:none"><div id="reg">Register</div></a></h4></center>
+    <!-- </div> -->
 </body>
 </html>
