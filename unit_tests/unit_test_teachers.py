@@ -1,13 +1,18 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+
 from models import teachers_model
+from models.model import Model
 from datetime import datetime, date
 from google.cloud import datastore
 import pytest
 import flask
 #import unittest
-from model import Model
 
 
-class Unit_Test_Teachers(Model):
+class Test_Teachers(Model):
 
 	def test_valid_init(self):
 		teacher = teachers_model.Teachers(123456)

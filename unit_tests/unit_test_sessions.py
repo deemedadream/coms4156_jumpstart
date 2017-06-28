@@ -6,6 +6,9 @@
 #from flask import session
 import logging
 import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 from datetime import date, datetime
 from models.model import Model
 
@@ -13,11 +16,12 @@ import flask
 from datetime import date
 from models import users_model, index_model, teachers_model, students_model, courses_model, sessions_model, attendance_records_model, model
 from google.cloud import datastore
+import pytest
 
 class TestUnits(Model):
 
     @pytest.fixture(scope="module")
-    def ds():
+    def ds(self):
         ds = model.Model().get_client()
         return ds
 
@@ -50,7 +54,7 @@ class TestUnits(Model):
         entity = datastore.Entity(
             key=key)
         entity.update({
-            'seid': None
+            'seid': None,
             'date': ''
         })
         return entity
@@ -148,7 +152,7 @@ class TestUnits(Model):
         assert ssm.close_window() == False
         assert ssm.window_open == False
 
-    def test_get_current_roster_size(self, ds)
+    def test_get_current_roster_size(self, ds):
         ssm = sessions_model.Sessions()
         assert ssm.get_current_roster_size() == 0
         key = self.ds.key('student')

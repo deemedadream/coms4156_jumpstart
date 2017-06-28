@@ -9,9 +9,16 @@ before_install:
 - tar -xzf credentials.tar.gz
 - mkdir -p lib
 install:
-- pip install -r requirements.txt -t lib/
+- pip install -r requirements.txt
 script:
-- python -m pytest unit_tests/
+- py.test unit_tests/unit_test_courses.py
+- py.test unit_tests/unit_test_model.py
+- py.test unit_tests/unit_test_sessions.py
+- py.test unit_tests/unit_test_teachers.py
+- py.test unit_tests/unit_test_users.py
+- python unit_tests/unit_test_attendance_records.py
+- python unit_tests/unit_test_index.py
+- python unit_tests/unit_test_student.py
 deploy:
   provider: gae
   skip_cleanup: true
