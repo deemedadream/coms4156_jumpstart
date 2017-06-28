@@ -181,19 +181,36 @@ def student_view_attendance():
 #Need to fix ARM; figure out how to best refactor get functions as class methods
 @app.route('/student/view_excuses')
 def student_view_excuses():
-    sid = flask.session['id']
+    sid = flask.session['id'] 
     excuses = arm.Attendance_Records().get_excuses_multi(sid=sid)
+
+    #get excuses indexed by their course name
+    data = {}
+    for e in excuses:
+        #need to implement get_session()
+        #session = sm.Sessions().get_session(e['seid'])
+        session = arm.Attendance_Records().get_session(e['seid'])
+        if session:
+            cid = session['cid']
+            course_name = courses_model.Courses(cid).get_course_name()
+
+            if not course_name:
+                continue
+
+            if not data.get(course_name):
+                data[course_name] = []
+
+            #add the excuse message to the session information
+            session['excuse'] = e['excuse']
+            data[course_name].append(session)
+
     return render_template("student_excuses.html",
-                           excuses=excuses)
+                           data=data)
 
-
-@app.route('/student/add_excuse/',
-           defaults={'seid': None},
-           methods=['GET', 'POST'])
-@app.route('/student/add_excuse/<seid>', methods=['GET', 'POST'])
+@app.route('/student/add_excuse/<int:seid>', methods=['GET', 'POST'])
 def add_excuse(seid):
+    sid = flask.session['id']
     if request.method == 'POST':
-        sid = flask.session['id']
         seid = request.form['seid']
         excuse = request.form['excuse']
         record = arm.Attendance_Records(sid=sid,
@@ -202,11 +219,12 @@ def add_excuse(seid):
         return flask.redirect(flask.url_for('student_view_excuses'))
     else:
         #MOCK DATA: NEED TO ADD GET_SESSION METHOD
-        session = dict(seid=1 if seid is None else seid,
-                       date=date.today())
+        session = arm.Attendance_Records().get_session(seid)
+        absences = arm.Attendance_Records(sid=sid,
+                                          seid=seid).get_absences()
         return render_template('add_excuse.html',
-                               session=session)
-
+                               session=session,
+                               absences=absences )
 
 @app.route('/teacher/', methods=['GET', 'POST'])
 def main_teacher():

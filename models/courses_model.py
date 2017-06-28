@@ -16,7 +16,7 @@ class Courses(Model):
         query = self.ds.query(kind='courses')
         query.add_filter('cid', '=', int(self.cid))
         result = list(query.fetch())
-        return result[0]['name']
+        return result[0]['name'] if result else None
 
     def get_students(self, cid2 = None):
         if cid2 is None:

@@ -1,8 +1,18 @@
 {% extends 'base_student.html' %}
 {% block content %}
 
-{% for excuse in excuses %}
-{{ excuse['excuse'] }}
+{% for course_name in data %}
+	<p>{{ course_name }}</p>
+	<tr>
+		<th>Date</th>
+		<th>Excuse</th>
+	</tr>
+	{% for excused_session in data[course_name] %}
+		<tr>
+			<td>{{ excused_session['date'] }}</td>
+			<td>{{ excused_session['excuse'] }}</td>
+		</tr>
+	{% endfor %}
 <br>
 {% endfor %}
 
