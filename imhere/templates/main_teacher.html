@@ -1,14 +1,59 @@
 {% extends 'base_teacher.html' %}
-
+{% block scripts %}
+<!-- <script type="text/javascript" src="{{url_for('static', filename='main_teacher.js')}}"></script> -->
+<script>
+// $("input[type='submit']").click(function (e) {
+// 		   if (e.target) {
+// 			   var attr = $(this).attr('submitting');
+// 			   if (typeof attr !== 'undefined' && attr !== false) { // If button has submitting attribute then do not submit it again.
+// 				   $(this).prop('disabled', true);
+// 				   $(this).removeAttr("submitting");
+// 				   e.preventDefault();
+// 			   }
+// 			   else {
+// 				   $(this).attr("submitting", "true"); // Add "submitting" attribute to prevent multiple submissions.
+// 			   }
+// 		   }
+// 	   });
+</script>
+{{super()}}
+{% endblock %}
+{% block styles %}
+{{super()}}
+<style>
+	a {
+	    position: relative;
+	    color: white;
+	    font-weight: normal;
+	    padding: 0 0 10px;
+	    font-size: 20px;
+	    text-decoration: none;
+	}
+	#addbox {
+		height: 40px;
+		width: 140px;
+		border-radius: 30px;
+		background-color: #33b5e5;
+		padding-top: 20px;
+	}
+	#removebox {
+		height: 40px;
+		width: 140px;
+		border-radius: 30px;
+		background-color: #33b5e5;
+		padding-top: 20px;
+	}
+</style>
+{% endblock %}
 {% block content %}
 
 	<br>
 	<br>
 	<br>
 
-    <a href="/teacher/add_class">Add a Class</a>
+    <a href="/teacher/add_class"><div id="addbox">Add a Class</div></a><br>
     {% if not empty %}
-        <a href="/teacher/remove_class">Remove a Class</a><br><br>
+        <a href="/teacher/remove_class"><div id="removebox">Remove a Class</div></a><br><br>
     {% endif %}
 
     {% for n in data %}
@@ -19,8 +64,8 @@
             </button>
             </form>
 
-            <form method="POST" action="/teacher/">
-            <button name="close" value="{{n['cid']}}">Close Attendance Window
+            <form id="closesesh" method="POST" action="/teacher/">
+            <button type="submit" name="close" value="{{n['cid']}}">Close Attendance Window
             </button>
             </form><br>
 
@@ -32,8 +77,8 @@
             <form method="POST" action="/teacher/view_class">
             <button name="cid" value="{{n['cid']}}" class="btn-link"><h4>{{n['name']}}</h4></button></form>
 
-            <form method="POST" action="/teacher/">
-            <button name="open" value="{{n['cid']}}">Open Attendance Window
+            <form id="opensesh" method="POST" action="/teacher/">
+            <button type="submit" name="open" value="{{n['cid']}}">Open Attendance Window
             </button>
             </form><br><br>
 
