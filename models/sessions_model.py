@@ -49,8 +49,6 @@ class Sessions(Model):
             })
             self.ds.put(entity)            
         else:
-            logging.warning('sessions_model line 50 =========================================================')
-            logging.warning(result[0])
             self.seid = result[0]['seid']
             self.cid = result[0]['cid']
             self.date = result[0]['date']
@@ -59,9 +57,6 @@ class Sessions(Model):
         return self.seid
 
     def open_window(self, seid = None):
-        '''Opens a session for this course
-        and returns the secret code for that session.
-        '''
         if seid is None:
             seid = self.seid
         self.date = str(date.today())
@@ -88,8 +83,6 @@ class Sessions(Model):
             'date' : self.date
         })
         self.ds.put(entity)
-        logging.warning('sessions_model line 104 =========================================================')
-        logging.warning(entity)
         #return confirmed window status from db
         query = self.ds.query(kind='sessions')
         query.add_filter('seid', '=', seid)
@@ -141,8 +134,6 @@ class Sessions(Model):
         query = self.ds.query(kind='attendance_records')
         query.add_filter('seid', '=', seid_count)
         result = list(query.fetch())
-        logging.warning('sessions_model ==================')
-        logging.warning(result)
         roster_size = len(result)
         return roster_size
 
@@ -153,8 +144,6 @@ class Sessions(Model):
         query.add_filter('seid', '=', seid_count)
         query.add_filter('signed_in', '=', True)
         result = list(query.fetch())
-        logging.warning('sessions_model atendance ====================')
-        logging.warning(result)
         attendance_count = len(result)
         return attendance_count
 

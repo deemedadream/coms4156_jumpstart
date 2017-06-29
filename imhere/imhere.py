@@ -109,8 +109,6 @@ def login():
 def main_student():
     sm = students_model.Students(flask.session['id'])
     courses = sm.get_courses()
-    logging.warning("Printing students line 50 ===========================================================================================")
-    logging.warning(courses)
     context = dict(data=courses)
     signed_in = True if sm.has_signed_in() else False
 
@@ -125,15 +123,9 @@ def main_student():
         if 'secret_code' in request.form.keys():
             provided_secret = request.form['secret_code']
             cid = int(request.form['cid'])
-            logging.warning("Printing students line 123 ===========================================================================================")
-            logging.warning(cid)
             actual_secret, seid = sm.get_secret_and_seid(cid)
-            logging.warning("Printing students line 126 ===========================================================================================")
-            logging.warning(actual_secret, seid)
             if courses:
                 for course in courses:
-                    logging.warning("Printing students line 135 ===========================================================================================")
-                    logging.warning(course)
                     if course['cid'] == cid:
                         if int(provided_secret) == int(actual_secret):
                             sm.sign_in(seid=seid)
@@ -142,8 +134,6 @@ def main_student():
                         else:
                             course['secret_valid'] = False
             context = dict(data=courses)
-            logging.warning("Printing students line 142 ===========================================================================================")
-            logging.warning(courses)
             return render_template(
                     'main_student.html',
                     submitted=True,
@@ -151,8 +141,6 @@ def main_student():
 
 @app.route('/student/view_attendance', methods=['GET', 'POST'])
 def student_view_attendance():
-    logging.warning("Printing line 149: student_view_attendance ============================================================")
-    logging.warning(flask.session['id'])
     sm = students_model.Students(flask.session['id'])
     ssm = sessions_model.Sessions()
     courses = sm.get_courses()
@@ -161,20 +149,12 @@ def student_view_attendance():
     if request.method == 'POST':
         cid = request.form['cid']
         course_name = courses_model.Courses(cid).get_course_name()
-        '''query = ds.query(kind='sessions')
-        query.add_filter('cid', '=', int(cid))
-        sessions = list(query.fetch())
-        for session in sessions:
-            query = self.ds.query(kind='attendance_records')
-            query.add_filter('cid', '=', int(session[0]['seid']))'''
 
     else:
         cid = courses[0]['cid']
         course_name = courses[0]['name']
 
     records = sm.get_course_attendance(cid)
-    logging.warning("Printing imhere line 159 ===========================================================================================")
-    logging.warning(records)
     return render_template(
         'view_student_record.html',
         courses=courses,
@@ -251,15 +231,10 @@ def main_teacher():
             ssm.open_window(new_seid)
             course = courses_model.Courses()
             students = course.get_students_sids(cid)
-            logging.warning('opening window ===========================================')
-            logging.warning(students)
-            logging.warning('done getting students')
             for student in students:
                 sm = students_model.Students(student['sid'])
                 sm.insert_attendance_record(new_seid)
     courses = tm.get_courses_with_session()
-    logging.warning("Printing imhere line 231 ===========================================================================================")
-    logging.warning(courses)
     empty = True if len(courses) == 0 else False
     context = dict(data=courses)
     return render_template('main_teacher.html', empty=empty, **context)
@@ -319,7 +294,6 @@ def remove_class():
 @app.route('/teacher/view_class', methods=['POST', 'GET'])
 def view_class():
     if request.method == 'GET':
-        logging.warning('should not happen')
         flask.redirect(flask.url_for('main_teacher'))
 
     elif request.method == 'POST':
@@ -346,43 +320,26 @@ def view_class():
             for uni in request.form['add_student'].split('\n'):
                 uni = uni.strip('\r')
                 res = cm.add_student(uni)
-            #uni = request.form['add_student']
-            #res = cm.add_student(uni)
         elif 'remove_student' in request.form.keys():
             for uni in request.form['remove_student'].split('\n'):
                 uni = uni.strip('\r')
                 res = cm.remove_student(uni)
-            #uni = request.form['remove_student']
-            #res = cm.remove_student(uni)
-
         course_name = cm.get_course_name()
 
-        logging.warning('course name is: line 350===========================================')
-        logging.warning(course_name)
         secret = ssm.get_secret_code()
         num_sessions = cm.get_num_sessions()
         sess = cm.get_sessions()
-        # logging.warning('class sessions: line 290===========================================')
-        # logging.warning(sess)
-        # logging.warning(num_sessions)
         ssm2 = sessions_model.Sessions()
         labels = []
         values = []
         for ses in sess:
-            # logging.warning(ses)
-            # logging.warning(ses['seid'])
             denom = float(ssm2.get_current_roster_size(ses['seid']))
             numerator = float(ssm2.get_attendance_count(ses['seid']))
             if(denom == 0):
                 values.append(0)
             else:
                 values.append((float(numerator/denom))*100)
-            # logging.warning(denom)
-            # logging.warning(numerator)
-
             labels.append(str(ses['date']))
-        # logging.warning(values)
-        # logging.warning(labels)
         students = cm.get_students()
         students_with_ar = []
         for student in students:
@@ -392,8 +349,6 @@ def view_class():
             students_with_ar.append([student, student_uni, num_ar])
 
         context = dict(students=students_with_ar)
-        #labels = ["9/17", "9/20", "9/22", "9/25", "9/27", "9/29", "10/1", "10/3", "10/5", "10/7"]
-        #values = [83, 21, 34, 45, 15, 63, 87, 28, 49, 100]
         return render_template(
                 'view_class.html',
                 cid=cid,
