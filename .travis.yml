@@ -14,8 +14,8 @@ install:
 allow_failures:
   - python: 2.7
 script:
--- export GOOGLE_APPLICATION_CREDENTIALS=cred.json
--- py.test unit_tests/
+-export GOOGLE_APPLICATION_CREDENTIALS=cred.json
+-py.test unit_tests/
 deploy:
   provider: gae
   skip_cleanup: true
