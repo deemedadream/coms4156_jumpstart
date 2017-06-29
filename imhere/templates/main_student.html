@@ -1,6 +1,6 @@
 {% extends 'base_student.html' %}
 {% block scripts %}
-<script type="text/javascript" src="{{url_for('static', filename='main_student.js')}}"></script>
+
 {{super()}}
 {% endblock %}
 {% block content %}
@@ -34,7 +34,7 @@
                      <input type="hidden" value="{{n['cid']}}" name="cid">
                      <input type="submit" value="Submit">
                  </form>
-                
+
 				{% if submitted %}
                      {% if n['secret_valid'] == False %}
                      <font color="red"><font size="2">Invalid Secret Code</font></font>
@@ -48,7 +48,7 @@
             <tr>
                 <td align="center" valign="baseline"><font size="6" width="100px"> {{n['name']}}</font></td>
                 <td align="left" valign="bottom">Successfully signed in to today's session</td>
-                
+
             </tr>
         {% endif %}
         <!-- Window closed. Student has not signed in before. -->
@@ -56,19 +56,22 @@
             <tr>
                  <td align="center" valign="baseline"><font size="6" width="100px"><font size="6">{{n['name']}}</font></td>
                  <td align="left" valign="bottom">No sign-in window available.</td>
-                 
+
             </tr>
         {% endif %}
 		</table><br>
     {% endfor %}
     <script>
-        $('#secretsignin').submit(function()
+    $(document).ready(function(){
+        $('#secretsignin').submit(function(e)
         {
-
-            regx = /[^a-z0-9\s\n]*/gi;
-            $("#unis").val($("#unis").val().replace(regx, ''));
+            regx = /[^0-9]*/gi;
+            secret = $("input[name=secret_code").val()
+            $("input[name=secret_code").val(secret.replace(regx, ''))
             return true;
-
         });
+    });
     </script>
+
+
 {% endblock %}
