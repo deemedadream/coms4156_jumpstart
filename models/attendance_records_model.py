@@ -9,7 +9,7 @@ class Attendance_Records(Model):
         if signed_in is None:
             signed_in = False
         self.sid = sid
-        self.seid = seid
+        self.seid = int(seid)
         self.signed_in = signed_in
         self.excuse_provided = excuse_provided
         self.ds = self.get_client()
@@ -46,7 +46,7 @@ class Attendance_Records(Model):
         for a in absences:
             session = self.get_session(a['seid'])
             if session:
-                sessions.append(session[0])
+                sessions.append(session)
         return sessions
 
     def get_records(self, **kwargs):
@@ -72,12 +72,10 @@ class Attendance_Records(Model):
             entity = datastore.Entity(key=key)
         else:
             #If it does, update the old one
-            logging.warning("Printing ARM.provide_excuse line 81========================")
-            logging.warning(old_excuse)
             entity = old_excuse
         entity.update({
                 'sid': self.sid,
-                'seid': self.seid,
+                'seid': int(self.seid),
                 'excuse': excuse
             })
         self.ds.put(entity)
@@ -97,7 +95,7 @@ class Attendance_Records(Model):
             query.add_filter("sid", "=", kwargs['sid'])
         if "seid" in kwargs:
             logging.warning("seid = {}".format(kwargs['seid']))
-            query.add_filter("seid", "=", int(kwargs['seid']))
+            query.add_filter("seid", "=", kwargs['seid'])
         results = list(query.fetch())
         logging.warning(results)
         return results
@@ -106,9 +104,6 @@ class Attendance_Records(Model):
         query = self.ds.query(kind="sessions")
         query.add_filter("seid", "=", int(seid))
         results = list(query.fetch())
-        logging.warning("Printing get_sessions: line 112====================")
-        logging.warning("seid: {}".format(seid))
-        logging.warning("sessions results: {}".format(str(results)))
         return results[0] if results else None
 
 

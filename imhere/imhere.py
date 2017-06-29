@@ -157,12 +157,14 @@ def student_view_attendance():
     records = sm.get_course_attendance(cid)
     attendance_model = arm.Attendance_Records()
     excuses = attendance_model.get_excuses_multi(sid=flask.session['id'])
-    excuse_session_ids = [e['seid'] for e in excuses]
+    excuse_session_ids = [int(e['seid']) for e in excuses]
+    logging.warning('Printing student_view_attednance ===================================')
+    logging.warning(str(excuse_session_ids))
     for r in records:
         r['excuse_submitted'] = False
         if r['seid'] in excuse_session_ids:
             r['excuse_submitted'] = True
-            
+
     return render_template(
         'view_student_record.html',
         courses=courses,
@@ -174,13 +176,8 @@ def student_view_attendance():
 def student_view_excuses():
     sid = flask.session['id']
     excuses = arm.Attendance_Records().get_excuses_multi(sid=sid)
-
-    #Context for excused sessions indexed by course name
     data = {}
-    logging.warning("Printing imhere.student_view_excuses: line 191===============================================")
     for e in excuses:
-        #need to implement get_session()
-        #session = sm.Sessions().get_session(e['seid'])
         session = arm.Attendance_Records().get_session(e['seid'])
         logging.warning("excuses seid: {}".format(e['seid']))
         logging.warning("getting corresponding session....")
@@ -206,7 +203,6 @@ def student_view_excuses():
 def add_excuse(seid):
     sid = flask.session['id']
     if request.method == 'POST':
-        logging.warning("Printing imhere.add_excuse line 214===============================")
         seid = request.form['seid']
         excuse = request.form['excuse']
         logging.warning("seid: {}, excuse: {}".format(str(seid), excuse))
@@ -217,18 +213,15 @@ def add_excuse(seid):
     else:
         #MOCK DATA: NEED TO ADD GET_SESSION METHOD
         session = arm.Attendance_Records().get_session(seid)
-        absences = arm.Attendance_Records(sid=sid,
-                                          seid=seid).get_absences()
         return render_template('student_add_excuse.html',
-                               session=session,
-                               absences=absences)
+                               session=session)
 
 @app.route('/teacher/', methods=['GET', 'POST'])
 def main_teacher():
     tid = flask.session['id']
     if request.method == 'GET':
         index = index_model.Index(tid)
-        if(not index.is_teacher()):
+        if (not index.is_teacher()):
             return render_template('error.html')
     tm = teachers_model.Teachers(tid)
     ssm = sessions_model.Sessions()
@@ -271,13 +264,10 @@ def add_class():
             if not um.is_valid_uni(uni):
                 return render_template('add_class.html', invalid_uni=True)
 
-        # then create course and add students to course
         course_name = request.form['classname']
         cid = tm.add_course(course_name)
         cm = courses_model.Courses(cid)
-        #create first session
-        #ssm = sessions_model.Sessions()
-        #ssm.open_session(cid)
+
 
         for uni in request.form['unis'].split('\n'):
             uni = uni.strip('\r')
