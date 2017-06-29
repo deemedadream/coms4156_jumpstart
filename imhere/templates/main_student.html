@@ -29,11 +29,11 @@
 
             <form id="secretsignin" action="/student/" method="post">
                 Sign in now!
-                <input type="text" name="secret_code" placeholder="Secret Code">
+                <input required id="unis" type="text" name="secret_code" placeholder="Secret Code">
                 <input type="hidden" value="{{n['cid']}}" name="cid">
                 <input type="submit" value="Submit">
             </form><br>
-
+            
             {% if submitted %}
                 {% if n['secret_valid'] == False %}
                 <font color="red">Invalid Secret Code</font>
@@ -52,4 +52,14 @@
             No sign-in window available.
         {% endif %}
     {% endfor %}
+    <script>
+        $('#secretsignin').submit(function()
+        {
+
+            regx = /[^a-z0-9\s\n]*/gi;
+            $("#unis").val($("#unis").val().replace(regx, ''));
+            return true;
+
+        });
+    </script>
 {% endblock %}

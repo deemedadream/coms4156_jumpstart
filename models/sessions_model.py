@@ -68,7 +68,8 @@ class Sessions(Model):
         query = self.ds.query(kind='sessions')
         query.add_filter('seid', '=', seid)
         result = list(query.fetch())
-        entity = result[0]
+        if result:
+            entity = result[0]
         
         #Close the windows of old sessions
         query = self.ds.query(kind='sessions')
