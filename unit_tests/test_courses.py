@@ -2,6 +2,7 @@ import logging
 import sys
 import pytest
 import flask
+import os
 
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
@@ -104,8 +105,6 @@ class TestUnits(Model):
         ds.put(entity)
         assert len(cm.get_students(99999999)) > 0
         self.delete_course(key_id)
-        
-   
     
     def test_get_students_sids(self):
         key_id = self.upper_bound_course_entity()
@@ -123,7 +122,7 @@ class TestUnits(Model):
         assert len(cm.get_students(99999999)) > 0
         self.delete_course(key_id)
     
-    def test_add_student(self):
+    '''def test_add_student(self):
         ds = model.Model().get_client()
         cm = courses_model.Courses()
         assert cm.add_student('adsfas') == -1 #an invalid uni
@@ -142,6 +141,6 @@ class TestUnits(Model):
         key = ds.key('student', key_id)
         ds.delete(key)
         self.delete_enrolled(99999999) 
-        cm.remove_student('ttc2132')
+        cm.remove_student('ttc2132')'''
         
  

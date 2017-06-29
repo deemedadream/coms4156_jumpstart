@@ -38,18 +38,10 @@ class Students(Model):
             courses.extend(list(query.fetch()))
         final = copy.deepcopy(enrolledCourses)
 
-        #If there are courses, check whether there are active sessions and student is signed in
-        #right now, only checks if first session in the past sessions is open; what if that is not
-        #the latest session? Also if there are multiple sessions, sets course[signed_in] to the
-        #signed_in status of the attendance of the student on the last session in the result.
-        #What we want is to set window_open and signed_in to the values of the latest session and 
-        #attendance record for that session. Also we may want to write a restriction where only one session
-        #can be open at a time for a course.
         for course in courses:
             query = self.ds.query(kind='sessions')
             query.add_filter('cid', '=', course['cid'])
             sessions = list(query.fetch())
-            logging.warning(sessions)
             course['window_open'] = False
             course['signed_in'] = False
             course['secret_valid'] = None
@@ -72,13 +64,8 @@ class Students(Model):
     def get_secret_and_seid(self, cid = None):
         if cid is None:
             cid = -1
-        '''query = self.ds.query(kind='enrolled_in')
-#        query.add_filter('sid', '=', int(self.sid))
-        enrolled_in = list(query.fetch())'''
-        logging.warning("Printing students line 49 ===========================================================================================")
-        logging.warning(cid)
+
         results = list()
-        #for enrolled in enrolled_in:
         query = self.ds.query(kind='sessions')
         query.add_filter('cid', '=', int(cid))
         query.add_filter('window_open', '=', True)
@@ -86,9 +73,6 @@ class Students(Model):
         for session in sessions:
             if session['window_open']==True:
                 results.append(session)
-            # results = results + list(query.fetch())
-        logging.warning("Printing students line 61 ===========================================================================================")
-        logging.warning(results)
         if len(results) == 1:       #Works because open_window() ensures that only one window is open at a time
             secret = results[0]['secret']
             seid = results[0]['seid']
@@ -114,8 +98,6 @@ class Students(Model):
             return True if len(results) == 1 else False
 
     def insert_attendance_record(self, seid):
-        logging.warning("Printing students line 112 ===========================================================================================")
-        logging.warning(seid)
         query = self.ds.query(kind='attendance_records')
         query.add_filter('seid', '=', int(seid))
         query.add_filter('sid', '=', self.sid)
@@ -157,19 +139,12 @@ class Students(Model):
             query.add_filter('seid', '=', session['seid'])
             query.add_filter('sid', '=', self.sid)
             results = list(query.fetch())
-            logging.warning("Printing students line 110 ===========================================================================================")
-            #logging.warning(cid)
-            logging.warning(self.sid)
-            #logging.warning(session['seid'])
-            #logging.warning(len(results))
             session['signed_in'] = False
             for result in results:
                 if result['signed_in']:
                     session['signed_in'] = True
         return sessions
 
-
-    #need to make more efficient
     def get_num_attendance_records(self, cid):
         results = self.get_course_attendance(cid)
         num_ar = 0

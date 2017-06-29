@@ -25,8 +25,6 @@ class Courses(Model):
         query.add_filter('cid', '=', int(cid2))
         enrolled_in = list(query.fetch())
         results = list()
-        logging.warning('enrolled in')
-        logging.warning(enrolled_in)
         for enrolled in enrolled_in:
             query = self.ds.query(kind='user')
             query.add_filter('id', '=', enrolled['sid'])

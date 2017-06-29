@@ -10,8 +10,12 @@ before_install:
 - mkdir -p lib
 install:
 - pip install -r requirements.txt
+-matrix:
+  allow_failures:
+  - python: 2.7
 script:
-  echo "No Script to run"
+- export GOOGLE_APPLICATION_CREDENTIALS=cred.json
+- py.test unit_tests/
 deploy:
   provider: gae
   skip_cleanup: true
