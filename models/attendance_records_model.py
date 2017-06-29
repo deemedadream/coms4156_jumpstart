@@ -44,8 +44,7 @@ class Attendance_Records(Model):
                                     signed_in=False)
         sessions = []
         for a in absences:
-            key = self.ds.key('sessions', seid=a['seid'])
-            session = self.ds.get(key)
+            session = self.get_session(a['seid'])
             if session:
                 sessions.append(session)
         return sessions
