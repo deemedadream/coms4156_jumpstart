@@ -6,11 +6,10 @@
 import logging
 import sys
 import os
-from datetime import date, datetime
-from models.model import Model
 
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
-
+from datetime import date, datetime
+from models.model import Model
 import flask
 from datetime import date
 from models import users_model, index_model, teachers_model, students_model, courses_model, sessions_model, attendance_records_model, model
