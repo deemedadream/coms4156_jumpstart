@@ -3,11 +3,11 @@
 {% block content %}
 <h2>Submit An Excuse</h2>
 <form action="" method="post">
-    <label for="seid">Session ID</label>
-    <input type="number" name="seid" value="{{ session['seid'] }}">
+    <label for="seid">Submit an Excuse for {{ session['date'] }}</label>
+    <input type="hidden" name="seid" value="{{ session['seid'] }}">
     <br>
     <label for="excuse">Excuse Message</label>
-    <input type="text" name="excuse" maxlength="150">
+    <textarea rows="4" cols="50" name="excuse" placeholder="Type your excuse here..."></textarea>
     <br>
     <input type="submit" value="Submit Excuse">
 </form>

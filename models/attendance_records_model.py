@@ -96,10 +96,10 @@ class Attendance_Records(Model):
         logging.warning("Printing ARM.get_excuses_multi====================================")
         if "sid" in kwargs:
             logging.warning("sid = {}".format(kwargs['sid']))
-            query.add_filter("sid", "=", kwargs["sid"])
+            query.add_filter("sid", "=", kwargs['sid'])
         if "seid" in kwargs:
             logging.warning("seid = {}".format(kwargs['seid']))
-            query.add_filter("seid", "=", kwargs["seid"])
+            query.add_filter("seid", "=", int(kwargs['seid']))
         results = list(query.fetch())
         logging.warning(results)
         return results

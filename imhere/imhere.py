@@ -168,6 +168,13 @@ def student_view_attendance():
         course_name = courses[0]['name']
 
     records = sm.get_course_attendance(cid)
+    attendance_model = arm.Attendance_Records()
+    for r in records:
+        r['excuse_submitted'] = False
+        excuse = attendance_model.get_excuses_multi(sid=flask.session['id'],
+                                                    seid=r['seid'])
+        if excuse:
+            r['excuse_submitted'] = True
     logging.warning("Printing imhere line 159 ===========================================================================================")
     logging.warning(records)
     return render_template(
