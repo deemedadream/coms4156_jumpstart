@@ -15,10 +15,14 @@ class Courses(Model):
     def get_course(self, cid=None, name=None):
         query = self.ds.query(kind='courses')
         if cid:
-            query.add_filter('cid', '=', cid)
+            logging.warning("cid = {}".format(cid))
+            query.add_filter('cid', '=', int(cid))
         if name:
+            logging.warning("name = {}".format(name))
             query.add_filter('name', '=', name)
+        logging.warning("Printing get_course =============================")
         result = list(query.fetch())
+        logging.warning(str(result))
         return result[0] if result else None
 
     def get_course_name(self):
