@@ -1,6 +1,6 @@
 {% extends 'base_student.html' %}
 {% block scripts %}
-<!-- <script type="text/javascript" src="{{url_for('static', filename='main_student.js')}}"></script> -->
+<script type="text/javascript" src="{{url_for('static', filename='main_student.js')}}"></script>
 {{super()}}
 {% endblock %}
 {% block content %}
@@ -19,38 +19,47 @@
 {% else %}
     <h4>You are not registered for any courses.</h4>
 {% endif %}
-
+    <br><br><br>
     <!-- Showing all of the Student's classes on this page. 3 cases: -->
     {% for n in data %}
-        <!-- Window open. Student has not signed in before. -->
-        {% if n['window_open'] == True and n['signed_in'] == False %}
-
-            <br><b><font size="7">{{n['name']}}</font></b><br>
-
-            <form id="secretsignin" action="/student/" method="post">
-                Sign in now!
-                <input required id="unis" type="text" name="secret_code" placeholder="Secret Code">
-                <input type="hidden" value="{{n['cid']}}" name="cid">
-                <input type="submit" value="Submit">
-            </form><br>
-
-            {% if submitted %}
-                {% if n['secret_valid'] == False %}
-                <font color="red">Invalid Secret Code</font>
-                {% endif %}
-            {% endif %}
-
-        {% endif %}
+	   <table class="table1" width="600px">
+	     <!-- Window open. Student has not signed in before. -->
+         {% if n['window_open'] == True and n['signed_in'] == False %}
+ 		 	<tr>
+             	<td align="center" valign="baseline" width="400px"><b><font size="6" >{{n['name']}}</font></b></td>
+ 				<td align="left" valign="bottom">
+                 <form id="secretsignin" action="/student/" method="post">
+                     Sign in now!
+                     <input required id="unis" type="text" name="secret_code" placeholder="Secret Code">
+                     <input type="hidden" value="{{n['cid']}}" name="cid">
+                     <input type="submit" value="Submit">
+                 </form>
+                
+				{% if submitted %}
+                     {% if n['secret_valid'] == False %}
+                     <font color="red"><font size="2">Invalid Secret Code</font></font>
+                     {% endif %}
+                 {% endif %}
+			    </td>
+ 			 </tr>
+         {% endif %}
         <!-- Window open or closed. Student has signed in before. -->
         {% if n['signed_in'] == True %}
-           <br><font size="6"> {{n['name']}}</font><br>
-            Successfully signed in to today's session
+            <tr>
+                <td align="center" valign="baseline"><font size="6" width="100px"> {{n['name']}}</font></td>
+                <td align="left" valign="bottom">Successfully signed in to today's session</td>
+                
+            </tr>
         {% endif %}
         <!-- Window closed. Student has not signed in before. -->
         {% if n['window_open'] == False and n['signed_in'] == False %}
-            <br><font size="6">{{n['name']}}</font><br>
-            No sign-in window available.
+            <tr>
+                 <td align="center" valign="baseline"><font size="6" width="100px"><font size="6">{{n['name']}}</font></td>
+                 <td align="left" valign="bottom">No sign-in window available.</td>
+                 
+            </tr>
         {% endif %}
+		</table><br>
     {% endfor %}
     <script>
         $('#secretsignin').submit(function()
