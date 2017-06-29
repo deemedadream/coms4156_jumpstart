@@ -212,7 +212,6 @@ def add_excuse(seid):
 
 @app.route('/teacher/', methods=['GET', 'POST'])
 def main_teacher():
-
     tid = flask.session['id']
     if request.method == 'GET':
         index = index_model.Index(tid)
