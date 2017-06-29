@@ -46,7 +46,7 @@ class Attendance_Records(Model):
         for a in absences:
             session = self.get_session(a['seid'])
             if session:
-                sessions.append(session)
+                sessions.append(session[0])
         return sessions
 
     def get_records(self, **kwargs):
@@ -64,16 +64,23 @@ class Attendance_Records(Model):
         return result[0] if len(result) > 0 else []
 
     def provide_excuse(self, excuse):
-        #check if excuse already exists
-        if not self.get_excuse():
+        #check if excuse already exists for this sid, seid pair
+        old_excuse = self.get_excuse()
+        if not old_excuse:
+            #If not, create new excuse entity
             key = self.ds.key("excuses")
             entity = datastore.Entity(key=key)
-            entity.update({
+        else:
+            #If it does, update the old one
+            logging.warning("Printing ARM.provide_excuse line 81========================")
+            logging.warning(old_excuse)
+            entity = old_excuse
+        entity.update({
                 'sid': self.sid,
                 'seid': self.seid,
                 'excuse': excuse
             })
-            self.ds.put(entity)
+        self.ds.put(entity)
 
     def remove_excuse(self):
         query = self.ds.query(kind="excuses")
@@ -84,17 +91,24 @@ class Attendance_Records(Model):
 
     def get_excuses_multi(self, **kwargs):
         query = self.ds.query(kind="excuses")
+        logging.warning("Printing ARM.get_excuses_multi====================================")
         if "sid" in kwargs:
-            query.add_filter("sid", "=", kwargs["sid"])
+            logging.warning("sid = {}".format(kwargs['sid']))
+            query.add_filter("sid", "=", kwargs['sid'])
         if "seid" in kwargs:
-            query.add_filter("seid", "=", kwargs["seid"])
+            logging.warning("seid = {}".format(kwargs['seid']))
+            query.add_filter("seid", "=", int(kwargs['seid']))
         results = list(query.fetch())
+        logging.warning(results)
         return results
 
     def get_session(self, seid):
         query = self.ds.query(kind="sessions")
         query.add_filter("seid", "=", int(seid))
         results = list(query.fetch())
+        logging.warning("Printing get_sessions: line 112====================")
+        logging.warning("seid: {}".format(seid))
+        logging.warning("sessions results: {}".format(str(results)))
         return results[0] if results else None
 
 

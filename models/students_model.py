@@ -37,7 +37,6 @@ class Students(Model):
             query.add_filter('cid', '=', enrolledCourse['cid'])
             courses.extend(list(query.fetch()))
         final = copy.deepcopy(enrolledCourses)
-
         for course in courses:
             query = self.ds.query(kind='sessions')
             query.add_filter('cid', '=', course['cid'])

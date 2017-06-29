@@ -155,6 +155,14 @@ def student_view_attendance():
         course_name = courses[0]['name']
 
     records = sm.get_course_attendance(cid)
+    attendance_model = arm.Attendance_Records()
+    excuses = attendance_model.get_excuses_multi(sid=flask.session['id'])
+    excuse_session_ids = [e['seid'] for e in excuses]
+    for r in records:
+        r['excuse_submitted'] = False
+        if r['seid'] in excuse_session_ids:
+            r['excuse_submitted'] = True
+            
     return render_template(
         'view_student_record.html',
         courses=courses,
@@ -162,19 +170,22 @@ def student_view_attendance():
         course_name=course_name
     )
 
-#Need to fix ARM; figure out how to best refactor get functions as class methods
 @app.route('/student/view_excuses')
 def student_view_excuses():
     sid = flask.session['id']
     excuses = arm.Attendance_Records().get_excuses_multi(sid=sid)
 
-    #get excuses indexed by their course name
+    #Context for excused sessions indexed by course name
     data = {}
+    logging.warning("Printing imhere.student_view_excuses: line 191===============================================")
     for e in excuses:
         #need to implement get_session()
         #session = sm.Sessions().get_session(e['seid'])
         session = arm.Attendance_Records().get_session(e['seid'])
+        logging.warning("excuses seid: {}".format(e['seid']))
+        logging.warning("getting corresponding session....")
         if session:
+            logging.warning(session)
             cid = session['cid']
             course_name = courses_model.Courses(cid).get_course_name()
 
@@ -195,8 +206,10 @@ def student_view_excuses():
 def add_excuse(seid):
     sid = flask.session['id']
     if request.method == 'POST':
+        logging.warning("Printing imhere.add_excuse line 214===============================")
         seid = request.form['seid']
         excuse = request.form['excuse']
+        logging.warning("seid: {}, excuse: {}".format(str(seid), excuse))
         record = arm.Attendance_Records(sid=sid,
                                         seid=seid)
         record.provide_excuse(excuse)
@@ -206,9 +219,9 @@ def add_excuse(seid):
         session = arm.Attendance_Records().get_session(seid)
         absences = arm.Attendance_Records(sid=sid,
                                           seid=seid).get_absences()
-        return render_template('add_excuse.html',
+        return render_template('student_add_excuse.html',
                                session=session,
-                               absences=absences )
+                               absences=absences)
 
 @app.route('/teacher/', methods=['GET', 'POST'])
 def main_teacher():
@@ -362,36 +375,42 @@ def view_class():
 
 
 @app.route('/teacher/view_excuses', methods=['GET','POST'])
-def view_excuses():
-    context = dict(post=False, data=dict())
-    #get sessions for selected course id and submitted excuses
-    if request.method == 'POST':
-        cid = request.form['cid']
-        course = courses_model.Courses(cid)
-        sessions = course.get_sessions()
-        results = dict()
-
-        #get unis and excuse messages for all sessions
-        sm = students_model.Students(1)
-        for s in sessions:
-            excuses = arm.Attendance_Records().get_excuses_multi(seid=s['seid'])
-            unis = []
-            for e in excuses:
-                sm.sid = e['sid']
-                unis.append(sm.get_uni())
-            results[s['date']] = [(u, e['excuse']) \
-                                  for (u, e) in zip(unis, excuses)]
-        context['post'] = True
-        context['data'] = results
-        context['course_name'] = course.get_course_name()
-        context['sessions'] = sessions
-
+def teacher_view_excuses():
     #get courses
     tid = flask.session['id']
     teacher = teachers_model.Teachers(tid)
-    courses_taught = teacher.get_courses()
+    courses_taught = teacher.get_courses() 
 
-    return render_template("view_excuses.html",
+    #get sessions for selected course id and submitted excuses
+    context = dict(data=[])
+    if not courses_taught:
+        return render_template("teacher_view_excuses.html",
+                               courses_taught=courses_taught,
+                               **context)
+
+    if request.method == 'POST':
+        cid = request.form['cid']
+    else:
+        cid = courses_taught[0]['cid']
+    course = courses_model.Courses(cid)
+    sessions = course.get_sessions()
+
+    #get unis and excuse messages for all sessions
+    sm = students_model.Students(1)
+    results = []
+    for s in sessions:
+        excuses = arm.Attendance_Records().get_excuses_multi(seid=s['seid'])
+        if excuses:
+            for e in excuses:
+                sm.sid = e['sid']
+                e['uni'] = sm.get_uni()
+            s['excuses'] = excuses
+            results.append(s)
+       
+    context['data'] = results
+    context['course_name'] = course.get_course_name()
+
+    return render_template("teacher_view_excuses.html",
                            courses_taught=courses_taught,
                            **context)
 

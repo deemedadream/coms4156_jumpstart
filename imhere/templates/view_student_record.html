@@ -23,7 +23,7 @@
         <th>Date</th>
         <th>Session ID</th>
         <th>Signed In</th>
-        <th>Message</th>
+        <th>Action</th>
     </tr>
     	{% if records %}    
         {% for n in records %}
@@ -32,8 +32,14 @@
           <td class="c3" style="text-align:center">{{n['seid']}}</td>
           <td class="c3" style="text-align:center">{{n['signed_in']}}</td>
           <td class="c3" style="text-align:center">
-          {% if not n['signed_in'] %}
-            <a href="{{ url_for('add_excuse', seid=n['seid'])}}">Submit Excuse</a>
+          {% if n['signed_in'] %}
+            <a href="{{ url_for('add_excuse', seid=n['seid'])}}">
+              {% if n['excuse_submitted'] %}
+                Edit Excuse
+              {% else %}
+                Submit Excuse
+              {% endif %}
+            </a>
           {% endif %}
           </td>
         </tr>
