@@ -12,11 +12,18 @@ class Courses(Model):
         self.course_name = ""
         self.ds = self.get_client()
 
-    def get_course_name(self):
+    def get_course(self, cid=None, name=None):
         query = self.ds.query(kind='courses')
-        query.add_filter('cid', '=', int(self.cid))
+        if cid:
+            query.add_filter('cid', '=', cid)
+        if name:
+            query.add_filter('name', '=', name)
         result = list(query.fetch())
-        return result[0]['name'] if result else None
+        return result[0] if result else None
+
+    def get_course_name(self):
+        result = self.get_course(cid=self.cid)
+        return result['name'] if result else None
 
     def get_students(self, cid2 = None):
         if cid2 is None:
@@ -119,6 +126,9 @@ class Courses(Model):
             return results[0]
 
     def store_course(self):
+        #existing_course = self.get_course(name=self.course_name)
+        #if existing_course:
+            #return -1
         key = self.ds.key('courses', self.cid)
         entity = datastore.Entity(
             key=key)

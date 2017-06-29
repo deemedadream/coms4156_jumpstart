@@ -10,8 +10,8 @@
         <button>Create Class</button>
     </form><br>
 
-    {% if invalid_uni %}
-    <font color="red">Invalid UNI's entered, please recreate the class</font>
+    {% if error %}
+    <font color="red">{{ error }}</font>
     {% endif %}
 
     </center>

@@ -47,20 +47,42 @@ class Teachers(Model):
                     break
         return courses
 
-    def add_course(self, course_name):
-        key = self.ds.key('courses')
-        entity = datastore.Entity(
-            key=key)
-        entity.update({
-            'name': course_name
-        })
-        self.ds.put(entity)
-        cid = entity.key.id
-        entity.update({
-            'cid': cid
-        })
-        self.ds.put(entity)
+    def get_course(self, course_name=None, cid=None):
+        query = self.ds.query(kind='courses')
+        if course_name:
+            query.add_filter('name', '=', course_name)
+        if cid:
+            query.add_filter('cid', '=', cid)
+        result = list(query.fetch())
+        return result[0] if result else None
 
+    def add_course(self, course_name):
+        old_course = self.get_course(course_name=course_name)
+        
+        #If a course of the same name doesn't already exist create one
+        if not old_course:
+            key = self.ds.key('courses')
+            entity = datastore.Entity(
+                key=key)
+            entity.update({
+                'name': course_name
+            })
+            self.ds.put(entity)
+            cid = entity.key.id
+            entity.update({
+                'cid': cid
+            })
+            self.ds.put(entity)
+        else:
+            #Check if existing course is already taught; if so return -1
+            cid = int(old_course['cid'])
+            query = self.ds.query(kind='teaches')
+            query.add_filter('cid', '=', cid)
+            query.add_filter('tid', '=', self.tid)
+            teaches = list(query.fetch())
+            if teaches:
+                return -1
+            
         key = self.ds.key('teaches')
         entity = datastore.Entity(
             key=key)

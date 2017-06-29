@@ -158,8 +158,6 @@ def student_view_attendance():
     attendance_model = arm.Attendance_Records()
     excuses = attendance_model.get_excuses_multi(sid=flask.session['id'])
     excuse_session_ids = [int(e['seid']) for e in excuses]
-    logging.warning('Printing student_view_attednance ===================================')
-    logging.warning(str(excuse_session_ids))
     for r in records:
         r['excuse_submitted'] = False
         if r['seid'] in excuse_session_ids:
@@ -179,10 +177,7 @@ def student_view_excuses():
     data = {}
     for e in excuses:
         session = arm.Attendance_Records().get_session(e['seid'])
-        logging.warning("excuses seid: {}".format(e['seid']))
-        logging.warning("getting corresponding session....")
         if session:
-            logging.warning(session)
             cid = session['cid']
             course_name = courses_model.Courses(cid).get_course_name()
 
@@ -205,7 +200,6 @@ def add_excuse(seid):
     if request.method == 'POST':
         seid = request.form['seid']
         excuse = request.form['excuse']
-        logging.warning("seid: {}, excuse: {}".format(str(seid), excuse))
         record = arm.Attendance_Records(sid=sid,
                                         seid=seid)
         record.provide_excuse(excuse)
@@ -251,7 +245,7 @@ def add_class():
     tm = teachers_model.Teachers(tid)
 
     if request.method == 'GET':
-        return render_template('add_class.html')
+        return render_template('add_class.html', error=None)
 
     elif request.method == 'POST':
         # first check that all unis are valid
@@ -262,10 +256,16 @@ def add_class():
             if not uni:
                 continue
             if not um.is_valid_uni(uni):
-                return render_template('add_class.html', invalid_uni=True)
+                invalid_uni = "Invalid UNI's entered, please recreate the class"
+                return render_template('add_class.html', error=invalid_uni)
 
         course_name = request.form['classname']
         cid = tm.add_course(course_name)
+
+        if cid == -1:
+            coursename_exists = "There is already a course by this name that you teach"
+            return render_template('add_class.html', error=coursename_exists)
+
         cm = courses_model.Courses(cid)
 
 
