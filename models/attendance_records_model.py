@@ -66,20 +66,23 @@ class Attendance_Records(Model):
         return result[0] if len(result) > 0 else []
 
     def provide_excuse(self, excuse):
-        #check if excuse already exists
-        excuse = self.get_excuse()
-        if not excuse:
+        #check if excuse already exists for this sid, seid pair
+        old_excuse = self.get_excuse()
+        if not old_excuse:
+            #If not, create new excuse entity
             key = self.ds.key("excuses")
             entity = datastore.Entity(key=key)
-            entity.update({
+        else:
+            #If it does, update the old one
+            logging.warning("Printing ARM.provide_excuse line 81========================")
+            logging.warning(old_excuse)
+            entity = old_excuse
+        entity.update({
                 'sid': self.sid,
                 'seid': self.seid,
                 'excuse': excuse
             })
-            self.ds.put(entity)
-        else:
-            logging.warning("Printing ARM.provide_excuse line 81========================")
-            logging.warning(excuse)
+        self.ds.put(entity)
 
     def remove_excuse(self):
         query = self.ds.query(kind="excuses")
@@ -98,14 +101,18 @@ class Attendance_Records(Model):
             logging.warning("seid = {}".format(kwargs['seid']))
             query.add_filter("seid", "=", kwargs["seid"])
         results = list(query.fetch())
-        logging.warning("Printing ARM.get_excuses_multi line 98===================================")
         logging.warning(results)
         return results
 
     def get_session(self, seid):
         query = self.ds.query(kind="sessions")
-        query.add_filter("seid", "=", seid)
+        #only works when the seid is converted to int for some reason
+        #however, this could be a problem if seid's are too large
+        query.add_filter("seid", "=", int(seid))
         results = list(query.fetch())
+        logging.warning("Printing get_sessions: line 112====================")
+        logging.warning("seid: {}".format(seid))
+        logging.warning("sessions results: {}".format(str(results)))
         return results[0] if results else None
 
 

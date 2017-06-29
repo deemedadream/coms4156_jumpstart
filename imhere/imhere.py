@@ -184,11 +184,15 @@ def student_view_excuses():
 
     #Context for excused sessions indexed by course name
     data = {}
+    logging.warning("Printing imhere.student_view_excuses: line 191===============================================")
     for e in excuses:
         #need to implement get_session()
         #session = sm.Sessions().get_session(e['seid'])
         session = arm.Attendance_Records().get_session(e['seid'])
+        logging.warning("excuses seid: {}".format(e['seid']))
+        logging.warning("getting corresponding session....")
         if session:
+            logging.warning(session)
             cid = session['cid']
             course_name = courses_model.Courses(cid).get_course_name()
 
@@ -209,8 +213,10 @@ def student_view_excuses():
 def add_excuse(seid):
     sid = flask.session['id']
     if request.method == 'POST':
+        logging.warning("Printing imhere.add_excuse line 214===============================")
         seid = request.form['seid']
         excuse = request.form['excuse']
+        logging.warning("seid: {}, excuse: {}".format(str(seid), excuse))
         record = arm.Attendance_Records(sid=sid,
                                         seid=seid)
         record.provide_excuse(excuse)
@@ -390,7 +396,7 @@ def view_class():
 
 
 @app.route('/teacher/view_excuses', methods=['GET','POST'])
-def view_excuses():
+def teacher_view_excuses():
     #get courses
     tid = flask.session['id']
     teacher = teachers_model.Teachers(tid)
