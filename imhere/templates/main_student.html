@@ -1,6 +1,6 @@
 {% extends 'base_student.html' %}
 {% block scripts %}
-<script type="text/javascript" src="{{url_for('static', filename='main_student.js')}}"></script>
+<!-- <script type="text/javascript" src="{{url_for('static', filename='main_student.js')}}"></script> -->
 {{super()}}
 {% endblock %}
 {% block content %}
@@ -33,7 +33,7 @@
                 <input type="hidden" value="{{n['cid']}}" name="cid">
                 <input type="submit" value="Submit">
             </form><br>
-            
+
             {% if submitted %}
                 {% if n['secret_valid'] == False %}
                 <font color="red">Invalid Secret Code</font>
