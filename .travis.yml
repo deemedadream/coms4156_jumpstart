@@ -9,7 +9,7 @@ before_install:
 - tar -xzf credentials.tar.gz
 - mkdir -p lib
 install:
-- pip install -r requirements.txt
+- pip install -t lib -r requirements.txt
 -matrix:
   allow_failures:
   - python: 2.7
