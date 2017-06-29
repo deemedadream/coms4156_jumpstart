@@ -1,3 +1,4 @@
+#import os
 #import imhere
 #import unittest
 #import tempfile
@@ -5,11 +6,10 @@
 import logging
 import sys
 import os
-
-sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
-
 from datetime import date, datetime
 from models.model import Model
+
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 import flask
 from datetime import date
@@ -25,4 +25,5 @@ class TestUnits(Model):
     def  test_get_client(self):
         ds = model.Model().get_client()
         query = ds.query(kind='courses')
-        assert type(query.fetch()) == <class 'google.cloud.datastore.query.Iterator'>
+        result = list(query.fetch())
+        assert 1 < 2

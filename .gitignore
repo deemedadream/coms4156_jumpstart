@@ -1,6 +1,13 @@
 client-secret.json
 credentials.tar.gz
 api_key.py
+.vscode/
+imhere/templates/~tm2344.html
+imhere/templates/~tm3CB9.html
+imhere/templates/~tmD1B7.html
+imhere/templates/~tmD80C.html
+tables.py
+
 
 
 *.pyc
