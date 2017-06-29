@@ -32,7 +32,7 @@
           <td class="c3" style="text-align:center">{{n['seid']}}</td>
           <td class="c3" style="text-align:center">{{n['signed_in']}}</td>
           <td class="c3" style="text-align:center">
-          {% if n['signed_in'] == 'Not signed in' %}
+          {% if not n['signed_in'] %}
             <a href="{{ url_for('add_excuse', seid=n['seid'])}}">Submit Excuse</a>
           {% endif %}
           </td>

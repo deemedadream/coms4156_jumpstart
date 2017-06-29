@@ -162,10 +162,10 @@ class Students(Model):
             logging.warning(self.sid)
             #logging.warning(session['seid'])
             #logging.warning(len(results))
-            session['signed_in'] = "Not signed in"
+            session['signed_in'] = False
             for result in results:
                 if result['signed_in']:
-                    session['signed_in'] = "Signed in"
+                    session['signed_in'] = True
         return sessions
 
 
@@ -174,6 +174,6 @@ class Students(Model):
         results = self.get_course_attendance(cid)
         num_ar = 0
         for r in results:
-            if r['signed_in'] == "Signed in":
+            if r['signed_in']:
                 num_ar += 1
         return num_ar
