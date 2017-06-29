@@ -374,7 +374,7 @@ def view_excuses():
         #get unis and excuse messages for all sessions
         sm = students_model.Students(1)
         for s in sessions:
-            excuses = arm.Attendance_Records().get_excuses_multi(sid=s['seid'])
+            excuses = arm.Attendance_Records().get_excuses_multi(seid=s['seid'])
             unis = []
             for e in excuses:
                 sm.sid = e['sid']

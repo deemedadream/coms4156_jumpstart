@@ -93,7 +93,7 @@ class Attendance_Records(Model):
 
     def get_session(self, seid):
         query = self.ds.query(kind="sessions")
-        query.add_filter("seid", "=", seid)
+        query.add_filter("seid", "=", int(seid))
         results = list(query.fetch())
         return results[0] if results else None
 
