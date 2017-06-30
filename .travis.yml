@@ -8,14 +8,13 @@ before_install:
   -in credentials.tar.gz.enc -out credentials.tar.gz -d
 - tar -xzf credentials.tar.gz
 - mkdir -p lib
+
 install:
 - pip install lib -r requirements.txt
--matrix:
-  allow_failures:
-  - python: 2.7
+
 script:
-- export GOOGLE_APPLICATION_CREDENTIALS=cred.json
-- py.test unit_tests/
+- "No Script to run"
+
 deploy:
   provider: gae
   skip_cleanup: true

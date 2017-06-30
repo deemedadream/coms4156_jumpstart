@@ -5,4 +5,3 @@ class Model:
 
     def get_client(self): 
         return datastore.Client('total-now-159322')
-

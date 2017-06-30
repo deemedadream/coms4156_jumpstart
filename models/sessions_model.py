@@ -1,9 +1,7 @@
 from model import Model
-from datetime import date, datetime
+from datetime import date 
 from random import randint
 from google.cloud import datastore
-import logging
-import sys
 
 class Sessions(Model):
 
@@ -90,8 +88,6 @@ class Sessions(Model):
         if result:
             self.window_open = result[0]['window_open']
             return result[0]['window_open']
-        else:
-            return False
 
     def close_window(self, close_seid = None):
         if close_seid is None:
@@ -101,14 +97,14 @@ class Sessions(Model):
         result = list(query.fetch())
         if result:
             entity = result[0]
-            if (entity['window_open'] == True):
+            if entity['window_open'] is True:
                 entity.update({
                 'window_open' : False,
                 'secret' : -1
                 })
                 self.ds.put(entity)
             else:
-                 return False
+                return False
             #return confirmed window status from db
             query = self.ds.query(kind='sessions')
             query.add_filter('seid', '=', close_seid)
@@ -125,8 +121,6 @@ class Sessions(Model):
         self.open_window()
         if self.window_open:
             return self.secret
-        else:
-            return -1
 
     def get_current_roster_size(self, seid_count = None):
         if seid_count is None:

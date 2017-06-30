@@ -1,9 +1,6 @@
 from model import Model
 from datetime import datetime, date, timedelta
-from random import randint
 from google.cloud import datastore
-import logging
-import sys
 
 class Courses(Model):
 
@@ -15,14 +12,10 @@ class Courses(Model):
     def get_course(self, cid=None, name=None):
         query = self.ds.query(kind='courses')
         if cid:
-            logging.warning("cid = {}".format(cid))
             query.add_filter('cid', '=', int(cid))
         if name:
-            logging.warning("name = {}".format(name))
             query.add_filter('name', '=', name)
-        logging.warning("Printing get_course =============================")
         result = list(query.fetch())
-        logging.warning(str(result))
         return result[0] if result else None
 
     def get_course_name(self):
@@ -62,7 +55,7 @@ class Courses(Model):
             query.add_filter('sid', '=', sid)
             query.add_filter('cid', '=', int(self.cid))
             result = list(query.fetch())
-            if len(result) > 0:
+            if result:
                 # failed because already in enrolled_in
                 return -2
 
@@ -85,7 +78,7 @@ class Courses(Model):
         query.add_filter('uni', '=', uni)
         result = list(query.fetch())
 
-        if len(result) == 1:
+        if result:
             # found a student with uni, attempt to remove from enrolled_in
             sid = result[0]['sid']
 
@@ -94,7 +87,7 @@ class Courses(Model):
             query.add_filter('cid', '=', int(self.cid))
             result = list(query.fetch())
 
-            if len(result) > 0:
+            if result:
 
                 self.ds.delete(result[0].key)
 
