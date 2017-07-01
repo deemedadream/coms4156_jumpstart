@@ -33,7 +33,6 @@ class Teachers(Model):
             query = self.ds.query(kind='courses')
             query.add_filter('cid', '=', teach['cid'])
             courses = courses + list(query.fetch())
-        results = list()
         for course in courses:
             course['active'] = 0
             query = self.ds.query(kind='sessions')

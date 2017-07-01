@@ -1,0 +1,75 @@
+Messages
+========
+
+attendance_records_model.py
+  Line: 4
+    pylint: import-error / Unable to import 'google.cloud'
+  Line: 94
+    pylint: logging-format-interpolation / Use % formatting in logging functions and pass the % parameters as arguments (col 28)
+  Line: 97
+    pylint: logging-format-interpolation / Use % formatting in logging functions and pass the % parameters as arguments (col 28)
+
+courses_model.py
+  Line: 2
+    pylint: unused-import / Unused date imported from datetime
+  Line: 3
+    pylint: import-error / Unable to import 'google.cloud'
+
+model.py
+  Line: 1
+    pylint: import-error / Unable to import 'google.cloud'
+  Line: 2
+    pylint: unused-import / Unused current_app imported from flask
+  Line: 4
+    pylint: old-style-class / Old-style class defined.
+
+sessions_model.py
+  Line: 4
+    pylint: import-error / Unable to import 'google.cloud'
+
+students_model.py
+  Line: 2
+    pylint: unused-import / Unused date imported from datetime
+  Line: 3
+    pylint: import-error / Unable to import 'google.cloud'
+  Line: 4
+    pylint: unused-import / Unused import logging
+  Line: 6
+    pylint: unused-import / Unused import sys
+  Line: 39
+    pylint: unused-variable / Unused variable 'final' (col 8)
+  Line: 73
+    pylint: singleton-comparison / Comparison to True should be just 'expr' or 'expr is True' (col 15)
+
+teachers_model.py
+  Line: 3
+    pylint: import-error / Unable to import 'google.cloud'
+  Line: 4
+    pylint: unused-import / Unused import sessions_model
+  Line: 5
+    pylint: unused-import / Unused import logging
+  Line: 6
+    pylint: unused-import / Unused import sys
+  Line: 43
+    pylint: singleton-comparison / Comparison to True should be just 'expr' or 'expr is True' (col 19)
+
+users_model.py
+  Line: 2
+    pylint: import-error / Unable to import 'google.cloud'
+  Line: 22
+    pylint: bare-except / No exception type(s) specified (col 12)
+
+
+
+Check Information
+=================
+         Started: 2017-06-30 22:58:38.440926
+        Finished: 2017-06-30 22:58:40.739842
+      Time Taken: 2.30 seconds
+       Formatter: grouped
+        Profiles: default, no_doc_warnings, no_test_warnings, strictness_medium, strictness_high, strictness_veryhigh, no_member_warnings
+      Strictness: None
+  Libraries Used: flask
+       Tools Run: dodgy, mccabe, pep8, profile-validator, pyflakes, pylint
+  Messages Found: 26
+

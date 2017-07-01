@@ -19,7 +19,8 @@ class Attendance_Records(Model):
         query.add_filter("sid", "=", self.sid)
         query.add_filter("seid", "=", self.seid)
         result = list(query.fetch())
-        return result[0] if len(result) > 0 else []
+        result_count = len(result)
+        return result[0] if result_count > 0 else []
 
     def insert_attendance_record(self):
         key = self.ds.key("attendance_records")
@@ -39,7 +40,6 @@ class Attendance_Records(Model):
         self.ds.delete_multi([r.key for r in result])
 
     def get_absences(self):
-        query = self.ds.query(kind="attendance_records")
         absences = self.get_records(sid=self.sid,
                                     signed_in=False)
         sessions = []
@@ -61,7 +61,8 @@ class Attendance_Records(Model):
         query.add_filter("sid", "=", self.sid)
         query.add_filter("seid", "=", self.seid)
         result = list(query.fetch())
-        return result[0] if len(result) > 0 else []
+        result_count = len(result)
+        return result[0] if result_count > 0 else []
 
     def provide_excuse(self, excuse):
         #check if excuse already exists for this sid, seid pair
@@ -89,7 +90,6 @@ class Attendance_Records(Model):
 
     def get_excuses_multi(self, **kwargs):
         query = self.ds.query(kind="excuses")
-        logging.warning("Printing ARM.get_excuses_multi====================================")
         if "sid" in kwargs:
             logging.warning("sid = {}".format(kwargs['sid']))
             query.add_filter("sid", "=", kwargs['sid'])
@@ -105,5 +105,3 @@ class Attendance_Records(Model):
         query.add_filter("seid", "=", int(seid))
         results = list(query.fetch())
         return results[0] if results else None
-
-

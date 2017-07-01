@@ -7,6 +7,12 @@ imhere/templates/~tm3CB9.html
 imhere/templates/~tmD1B7.html
 imhere/templates/~tmD80C.html
 tables.py
+models/app.yaml
+models/static_analysis.txt
+unit_tests/unit_test_base.py
+unit_tests/unit_test_index.py
+unit_tests/unit_test_teachers.py
+
 
 
 

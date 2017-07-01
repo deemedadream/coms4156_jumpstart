@@ -142,19 +142,20 @@ def main_student():
 @app.route('/student/view_attendance', methods=['GET', 'POST'])
 def student_view_attendance():
     sm = students_model.Students(flask.session['id'])
-    ssm = sessions_model.Sessions()
     courses = sm.get_courses()
+    records = list()
+    course_name=""
 
     #need to error check for when student is not enrolled in any courses
     if request.method == 'POST':
         cid = request.form['cid']
         course_name = courses_model.Courses(cid).get_course_name()
 
-    else:
+    elif courses:
         cid = courses[0]['cid']
         course_name = courses[0]['name']
-
-    records = sm.get_course_attendance(cid)
+        records = sm.get_course_attendance(cid)
+    
     attendance_model = arm.Attendance_Records()
     excuses = attendance_model.get_excuses_multi(sid=flask.session['id'])
     excuse_session_ids = [int(e['seid']) for e in excuses]
